@@ -1,17 +1,6 @@
 <template>
-      <main>
-    <h1>Berlin Places</h1>
-    <PlaceList :places="places" />
-  </main>
   <section>
-    <h2>Places</h2>
-
-    <!-- v-for rendert mehrfach PlaceItem -->
-    <PlaceItem
-      v-for="(p, index) in places"
-      :key="index"
-      :place="p"
-    />
+    <PlaceItem v-for="(p,i) in places" :key="p.name ?? i" :place="p" />
   </section>
 </template>
 
@@ -21,8 +10,8 @@ import PlaceItem from "./PlaceItem.vue";
 export default {
   name: "PlaceList",
   components: { PlaceItem },
-  props: {
-    places: Array
-  }
+  props: { places: { type: Array, required: true } }
 };
 </script>
+
+

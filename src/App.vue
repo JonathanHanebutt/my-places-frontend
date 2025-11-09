@@ -1,5 +1,6 @@
 <template>
   <main>
+    <h1>Berlin Places</h1>
     <PlaceList :places="places" />
   </main>
 </template>
@@ -21,31 +22,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-main {
-  max-width: 960px;
-  width: 100%;
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 2rem;
-  backdrop-filter: blur(8px);
-  animation: fadeIn 0.6s ease;
-}
-
-h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--accent);
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>
-</script>
-
