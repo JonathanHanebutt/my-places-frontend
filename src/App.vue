@@ -25,19 +25,19 @@ export default {
           name: "HTW Berlin",
           description: "Campus Wilhelminenhof an der Spree",
           rating: 5, like: 42, dislike: 1,
-          imageLink: "https://images.unsplash.com/photo-1520975922284-c0d71e7cd6b6?q=80&w=1200&auto=format&fit=crop"
+          imageLink: "/images/campus-wilhelminenhof.jpg"
         },
         {
           name: "Tempelhofer Feld",
           description: "Ehemaliger Flughafen, heute Freizeitfläche",
           rating: 4, like: 30, dislike: 2,
-          imageLink: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1200&auto=format&fit=crop"
+          imageLink: "/images/tempelhofer-feld.jpg"
         },
         {
           name: "Tiergarten",
           description: "Großer Park im Herzen von Berlin",
           rating: 5, like: 60, dislike: 3,
-          imageLink: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop"
+          imageLink: "/images/tiergarten.jpg"
         }
       ],
       totalLikes: 0,
