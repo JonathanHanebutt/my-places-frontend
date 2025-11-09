@@ -33,13 +33,13 @@ export default {
           name: "Tempelhofer Feld",
           description: "Ehemaliger Flughafen, heute Freizeitfläche",
           rating: 4, like: 30, dislike: 2,
-          imageLink: "/images/tempelhofer-feld.jpg"
+          imageLink: "/images/tempelhoferfeld.jpg"
         },
         {
           name: "Tiergarten",
           description: "Großer Park im Herzen von Berlin",
           rating: 5, like: 60, dislike: 3,
-          imageLink: "/images/tiergarten.jpg"
+          imageLink: "/images/Tiergarten.jpeg"
         }
       ],
       totalLikes: 0,
