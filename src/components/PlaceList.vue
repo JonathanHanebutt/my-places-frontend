@@ -1,4 +1,8 @@
 <template>
+      <main>
+    <h1>Berlin Places</h1>
+    <PlaceList :places="places" />
+  </main>
   <section>
     <h2>Places</h2>
 
