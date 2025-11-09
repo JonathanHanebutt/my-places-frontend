@@ -56,16 +56,8 @@ export default {
 </script>
 
 <style scoped>
-.deck {
-  display: grid;
-  place-items: center;
-  gap: 14px;
-}
-.stack {
-  position: relative;
-  width: min(520px, 92vw);
-  height: 360px; /* Platz für Karte(n) */
-}
+.deck { display: grid; justify-items: center; gap: 18px; }
+.stack { position: relative; width: min(520px, 92vw); height: 380px; margin: 0 auto; }
 .actions {
   display: flex;
   gap: 16px;
