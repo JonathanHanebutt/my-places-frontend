@@ -53,7 +53,7 @@ export default {
           rating: 5,
           like: 60,
           dislike: 3,
-          imageLink: "/images/Tiergarten.jepg",
+          imageLink: "/images/Tiergarten.jpeg",
         },
       ],
       totalLikes: 0,
@@ -135,17 +135,17 @@ body {
   background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
   display: flex;
   justify-content: center;
-  align-items: center;
   min-height: 100svh;
   transition: background 0.4s ease;
+  transform: translateX(60px); 
 }
 
 .page {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding-left: 60px; /* kleiner horizontaler Puffer */
-  padding-right: 40px;
+  padding-left: 80px; /* kleiner horizontaler Puffer */
+  padding-right: 80px;
 }
 
 .shell {
