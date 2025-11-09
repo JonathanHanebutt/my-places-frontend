@@ -45,7 +45,7 @@ export default {
           rating: 4,
           like: 30,
           dislike: 2,
-          imageLink: "/images/tempelhofer-feld.jpg",
+          imageLink: "/images/tempelhoferfeld.jpg",
         },
         {
           name: "Tiergarten",
@@ -53,7 +53,7 @@ export default {
           rating: 5,
           like: 60,
           dislike: 3,
-          imageLink: "/images/tiergarten.jpg",
+          imageLink: "/images/Tiergarten.jepg",
         },
       ],
       totalLikes: 0,
@@ -142,9 +142,10 @@ body {
 
 .page {
   width: 100%;
-  padding: clamp(16px, 2vw, 40px);
   display: flex;
   justify-content: center;
+  padding-left: 60px; /* kleiner horizontaler Puffer */
+  padding-right: 40px;
 }
 
 .shell {
