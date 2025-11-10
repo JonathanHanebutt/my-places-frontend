@@ -26,7 +26,7 @@ export default {
     interactive: { type: Boolean, default: true }, // nur Top-Karte dragbar
     stackIndex: { type: Number, default: 0 }       // für optischen Stack
   },
-  emits: ["swipe"], 
+  emits: ["swipe"], // { like: boolean }
   data() {
     return {
       x: 0, y: 0, rot: 0,
