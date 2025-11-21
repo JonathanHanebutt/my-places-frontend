@@ -4,17 +4,28 @@
       <header class="hdr">
         <h1>Berlin Places</h1>
         <button
-          class="theme-toggle"
-          @click="toggleTheme"
-          :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
+            class="theme-toggle"
+            @click="toggleTheme"
+            :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
         >
           🌓
         </button>
       </header>
 
-      <SwipeDeck :items="places" @rate="onRate" />
+      <!-- Lade- / Fehlermeldungen -->
+      <p v-if="loading">Lade Orte vom Server...</p>
+      <p v-else-if="error" class="error">
+        Fehler beim Laden: {{ error }}
+      </p>
 
-      <footer class="stats">
+      <!-- Swipe-Deck nur zeigen, wenn Daten da und kein Fehler -->
+      <SwipeDeck
+          v-else
+          :items="places"
+          @rate="onRate"
+      />
+
+      <footer class="stats" v-if="!loading && !error">
         Gesamt 👍 {{ totalLikes }} • 👎 {{ totalDislikes }}
       </footer>
     </div>
@@ -29,47 +40,51 @@ export default {
   components: { SwipeDeck },
   data() {
     return {
-      theme: "light", // aktuelles Theme
-      places: [
-        {
-          name: "HTW Berlin",
-          description: "Campus Wilhelminenhof an der Spree",
-          rating: 5,
-          like: 42,
-          dislike: 1,
-          imageLink: "/images/campus-wilhelminenhof.jpg",
-        },
-        {
-          name: "Tempelhofer Feld",
-          description: "Ehemaliger Flughafen, heute Freizeitfläche",
-          rating: 4,
-          like: 30,
-          dislike: 2,
-          imageLink: "/images/tempelhoferfeld.jpg",
-        },
-        {
-          name: "Tiergarten",
-          description: "Großer Park im Herzen von Berlin",
-          rating: 5,
-          like: 60,
-          dislike: 3,
-          imageLink: "/images/Tiergarten.jpeg",
-        },
-      ],
+      theme: "light",
+      places: [],
       totalLikes: 0,
       totalDislikes: 0,
+      loading: true,
+      error: null
     };
   },
   mounted() {
     // Dark Mode aus LocalStorage oder System übernehmen
     const saved = localStorage.getItem("theme");
     if (
-      saved === "dark" ||
-      (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)
+        saved === "dark" ||
+        (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
       this.theme = "dark";
     }
     document.documentElement.setAttribute("data-theme", this.theme);
+
+    // 👉 Daten vom Backend holen (GET /places auf Render)
+    fetch("https://places-webtech-backend.onrender.com/places")
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("HTTP " + res.status);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          this.places = data || [];
+          // Startwerte für die Gesamt-Likes aus den Daten berechnen
+          this.totalLikes = this.places.reduce(
+              (sum, p) => sum + (p.like || 0),
+              0
+          );
+          this.totalDislikes = this.places.reduce(
+              (sum, p) => sum + (p.dislike || 0),
+              0
+          );
+          this.loading = false;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.error = err.message;
+          this.loading = false;
+        });
   },
   methods: {
     toggleTheme() {
@@ -137,14 +152,14 @@ body {
   justify-content: center;
   min-height: 100svh;
   transition: background 0.4s ease;
-  transform: translateX(60px); 
+  transform: translateX(60px);
 }
 
 .page {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding-left: 80px; /* kleiner horizontaler Puffer */
+  padding-left: 80px;
   padding-right: 80px;
 }
 
@@ -205,6 +220,12 @@ body {
   padding: 0.6rem 1rem;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.error {
+  color: #b91c1c;
+  font-weight: 600;
+  text-align: center;
 }
 
 /* ---------- Responsive ---------- */
