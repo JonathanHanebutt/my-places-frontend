@@ -69,17 +69,18 @@ export default {
         })
         .then((data) => {
           this.places = data || [];
-          // Startwerte für die Gesamt-Likes aus den Daten berechnen
+
           this.totalLikes = this.places.reduce(
-              (sum, p) => sum + (p.like || 0),
+              (sum, p) => sum + (p.likeCount ?? 0),
               0
           );
           this.totalDislikes = this.places.reduce(
-              (sum, p) => sum + (p.dislike || 0),
+              (sum, p) => sum + (p.dislikeCount ?? 0),
               0
           );
           this.loading = false;
         })
+
         .catch((err) => {
           console.error(err);
           this.error = err.message;
@@ -92,19 +93,37 @@ export default {
       document.documentElement.setAttribute("data-theme", this.theme);
       localStorage.setItem("theme", this.theme);
     },
-    onRate({ item, like }) {
-      const found = this.places.find((p) => p.name === item.name);
+
+    async onRate({ item, like }) {
+      const backendBase = "https://places-webtech-backend.onrender.com";
+
+      // Lokal in der Liste updaten (damit UI sofort reagiert)
+      const found = this.places.find((p) => p.id === item.id);
       if (found) {
         if (like) {
-          found.like = (found.like || 0) + 1;
+          found.likeCount = (found.likeCount ?? 0) + 1;
           this.totalLikes++;
         } else {
-          found.dislike = (found.dislike || 0) + 1;
+          found.dislikeCount = (found.dislikeCount ?? 0) + 1;
           this.totalDislikes++;
         }
       }
+
+      // ---> WICHTIG FÜR M4: POST-Route im Backend aufrufen
+      const path = like
+          ? `/places/${item.id}/like`
+          : `/places/${item.id}/dislike`;
+
+      try {
+        await fetch(backendBase + path, {
+          method: "POST"
+        });
+      } catch (e) {
+        console.error("Fehler beim POST:", e);
+        // Optional: bei Fehler wieder zurückdrehen
+      }
     },
-  },
+  }
 };
 </script>
 

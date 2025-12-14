@@ -13,7 +13,10 @@
     <div class="content">
       <h3>{{ item.name }}</h3>
       <p class="desc" v-if="item.description">{{ item.description }}</p>
-      <p class="meta">⭐ {{ item.rating }} • 👍 {{ item.like }} • 👎 {{ item.dislike }}</p>
+      <p class="meta">
+        ⭐ {{ item.rating }} • 👍 {{ item.likeCount ?? 0 }} • 👎 {{ item.dislikeCount ?? 0 }}
+      </p>
+
     </div>
   </div>
 </template>
