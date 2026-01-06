@@ -1,16 +1,26 @@
 <template>
   <div class="page">
+
+    <!-- LOGIN AUF HINTERGRUND -->
+    <button class="login-btn" @click="isLoginOpen = true">
+      Login
+    </button>
+
+
     <div class="shell">
       <header class="hdr">
         <h1>Berlin Places</h1>
-        <button
-            class="theme-toggle"
-            @click="toggleTheme"
-            :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
-        >
-          🌓
-        </button>
+          <button
+              class="theme-toggle"
+              @click="toggleTheme"
+              :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
+          >
+            🌓
+          </button>
       </header>
+
+      <!-- Modal -->
+      <LoginModal :open="isLoginOpen" @close="isLoginOpen = false" />
 
       <!-- Lade- / Fehlermeldungen -->
       <p v-if="loading">Lade Orte vom Server...</p>
@@ -19,11 +29,7 @@
       </p>
 
       <!-- Swipe-Deck nur zeigen, wenn Daten da und kein Fehler -->
-      <SwipeDeck
-          v-else
-          :items="places"
-          @rate="onRate"
-      />
+      <SwipeDeck v-else :items="places" @rate="onRate" />
 
       <footer class="stats" v-if="!loading && !error">
         Gesamt 👍 {{ totalLikes }} • 👎 {{ totalDislikes }}
@@ -34,13 +40,16 @@
 
 <script>
 import SwipeDeck from "./components/SwipeDeck.vue";
+import LoginModal from "./components/LoginModal.vue";
 
 export default {
   name: "App",
-  components: { SwipeDeck },
+  components: { SwipeDeck, LoginModal },
   data() {
     return {
       theme: "light",
+      isLoginOpen: false,
+
       places: [],
       totalLikes: 0,
       totalDislikes: 0,
@@ -49,7 +58,6 @@ export default {
     };
   },
   mounted() {
-    // Dark Mode aus LocalStorage oder System übernehmen
     const saved = localStorage.getItem("theme");
     if (
         saved === "dark" ||
@@ -59,12 +67,9 @@ export default {
     }
     document.documentElement.setAttribute("data-theme", this.theme);
 
-    // 👉 Daten vom Backend holen (GET /places auf Render)
     fetch("https://places-webtech-backend.onrender.com/places")
         .then((res) => {
-          if (!res.ok) {
-            throw new Error("HTTP " + res.status);
-          }
+          if (!res.ok) throw new Error("HTTP " + res.status);
           return res.json();
         })
         .then((data) => {
@@ -80,7 +85,6 @@ export default {
           );
           this.loading = false;
         })
-
         .catch((err) => {
           console.error(err);
           this.error = err.message;
@@ -97,7 +101,6 @@ export default {
     async onRate({ item, like }) {
       const backendBase = "https://places-webtech-backend.onrender.com";
 
-      // Lokal in der Liste updaten (damit UI sofort reagiert)
       const found = this.places.find((p) => p.id === item.id);
       if (found) {
         if (like) {
@@ -109,20 +112,14 @@ export default {
         }
       }
 
-      // ---> WICHTIG FÜR M4: POST-Route im Backend aufrufen
-      const path = like
-          ? `/places/${item.id}/like`
-          : `/places/${item.id}/dislike`;
+      const path = like ? `/places/${item.id}/like` : `/places/${item.id}/dislike`;
 
       try {
-        await fetch(backendBase + path, {
-          method: "POST"
-        });
+        await fetch(backendBase + path, { method: "POST" });
       } catch (e) {
         console.error("Fehler beim POST:", e);
-        // Optional: bei Fehler wieder zurückdrehen
       }
-    },
+    }
   }
 };
 </script>
@@ -153,13 +150,9 @@ export default {
 }
 
 /* ---------- Global Layout ---------- */
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body,
-#app {
+html, body, #app {
   height: 100%;
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
@@ -175,6 +168,7 @@ body {
 }
 
 .page {
+  position: relative; /* Referenz für Login-Button */
   width: 100%;
   display: flex;
   justify-content: center;
@@ -182,7 +176,29 @@ body {
   padding-right: 80px;
 }
 
+/* LOGIN AUF HINTERGRUND */
+.login-btn {
+  position: absolute;
+  top: 24px;
+  right: -300px;   /* oder 0px */
+
+  z-index: 10;
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+  height: 40px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--surface-strong);
+  color: var(--text);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+
+
 .shell {
+  position: relative; /* WICHTIG */
   width: min(960px, 96vw);
   background: var(--surface);
   backdrop-filter: blur(10px);
@@ -193,6 +209,7 @@ body {
   flex-direction: column;
   align-items: center;
 }
+
 
 /* ---------- Header ---------- */
 .hdr {
@@ -210,9 +227,16 @@ body {
   color: var(--accent);
 }
 
+.hdr-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
 /* ---------- Theme Toggle ---------- */
 .theme-toggle {
-  margin-left: auto;
   border: none;
   cursor: pointer;
   border-radius: 999px;
@@ -249,12 +273,7 @@ body {
 
 /* ---------- Responsive ---------- */
 @media (min-width: 1200px) {
-  .shell {
-    padding: 2.5rem 3rem;
-  }
-
-  .hdr h1 {
-    font-size: 2.6rem;
-  }
+  .shell { padding: 2.5rem 3rem; }
+  .hdr h1 { font-size: 2.6rem; }
 }
 </style>
