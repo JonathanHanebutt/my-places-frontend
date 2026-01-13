@@ -7,35 +7,64 @@
       </div>
 
       <div class="tabs">
-        <button class="tab" :class="{ active: activeTab === 'login' }" @click="activeTab = 'login'">
+        <button class="tab" :class="{ active: activeTab === 'login' }" @click="switchTab('login')">
           Login
         </button>
-        <button class="tab" :class="{ active: activeTab === 'signup' }" @click="activeTab = 'signup'">
+        <button class="tab" :class="{ active: activeTab === 'signup' }" @click="switchTab('signup')">
           Registrieren
         </button>
       </div>
 
       <form class="form" @submit.prevent="onSubmit">
-        <div v-if="activeTab === 'signup'" class="field">
-          <label>Username</label>
-          <input v-model.trim="username" type="text" placeholder="z.B. keanu123" />
-        </div>
-
+        <!-- Username: bei Login + Signup -->
         <div class="field">
-          <label>E-Mail</label>
-          <input v-model.trim="email" type="email" placeholder="name@mail.de" />
+          <label>Username</label>
+          <input
+              v-model.trim="username"
+              type="text"
+              placeholder="z.B. keanu123"
+              autocomplete="username"
+              required
+          />
         </div>
 
+        <!-- E-Mail: nur bei Registrierung -->
+        <div v-if="activeTab === 'signup'" class="field">
+          <label>E-Mail</label>
+          <input
+              v-model.trim="email"
+              type="email"
+              placeholder="name@mail.de"
+              autocomplete="email"
+              required
+          />
+        </div>
+
+        <!-- Passwort: bei Login + Signup -->
         <div class="field">
           <label>Passwort</label>
-          <input v-model="password" type="password" placeholder="••••••••" />
+          <input
+              v-model="password"
+              type="password"
+              placeholder="••••••••"
+              :autocomplete="activeTab === 'login' ? 'current-password' : 'new-password'"
+              required
+          />
         </div>
 
-        <button class="primary" type="submit">
-          {{ activeTab === "login" ? "Login" : "Registrieren" }}
+        <!-- Feedback -->
+        <p v-if="errorMsg" class="msg err">{{ errorMsg }}</p>
+        <p v-if="successMsg" class="msg ok">{{ successMsg }}</p>
+
+        <button class="primary" type="submit" :disabled="loading">
+          {{ loading ? "Bitte warten..." : (activeTab === "login" ? "Login" : "Registrieren") }}
         </button>
 
-        <p class="hint">(Nur UI – Backend kommt später)</p>
+        <p class="hint">
+          {{ activeTab === "login"
+            ? "Mit deinem Account anmelden"
+            : "Neuen Account erstellen" }}
+        </p>
       </form>
     </div>
   </div>
@@ -52,28 +81,136 @@ export default {
       activeTab: "login",
       username: "",
       email: "",
-      password: ""
+      password: "",
+
+      loading: false,
+      errorMsg: null,
+      successMsg: null
     };
   },
   watch: {
     open(val) {
-      if (val) {
-        // reset beim Öffnen
-        this.activeTab = "login";
-        this.username = "";
-        this.email = "";
-        this.password = "";
-      }
+      if (val) this.resetForm();
     }
   },
   methods: {
-    onSubmit() {
-      // später: API call
-      console.log("submit", {
-        mode: this.activeTab,
-        username: this.username,
-        email: this.email
-      });
+    getBackendBase() {
+      // robust: funktioniert in Vite, und fällt sonst sauber zurück
+      const fromEnv =
+          (typeof import.meta !== "undefined" &&
+              import.meta.env &&
+              import.meta.env.VITE_BACKEND_URL) ||
+          null;
+
+      return fromEnv || "https://places-webtech-backend.onrender.com";
+    },
+
+    resetMessages() {
+      this.errorMsg = null;
+      this.successMsg = null;
+    },
+
+    resetForm() {
+      this.activeTab = "login";
+      this.username = "";
+      this.email = "";
+      this.password = "";
+      this.loading = false;
+      this.resetMessages();
+    },
+
+    switchTab(tab) {
+      this.activeTab = tab;
+      this.resetMessages();
+      // Optional: Passwort nicht löschen beim Tab wechseln
+      // this.password = "";
+    },
+
+    async safeReadBody(res) {
+      // Falls Backend mal text/plain liefert, nicht crashen
+      const ct = res.headers.get("content-type") || "";
+      if (ct.includes("application/json")) return await res.json();
+      return await res.text();
+    },
+
+    async onSubmit() {
+      this.resetMessages();
+      this.loading = true;
+
+      const backendBase = this.getBackendBase();
+
+      try {
+        if (this.activeTab === "signup") {
+          // Register
+          const res = await fetch(`${backendBase}/api/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: this.username,
+              email: this.email,
+              password: this.password
+            })
+          });
+
+          if (!res.ok) {
+            const body = await this.safeReadBody(res);
+            throw new Error(
+                typeof body === "string"
+                    ? body
+                    : (body?.message || `Register failed (HTTP ${res.status})`)
+            );
+          }
+
+          this.successMsg = "Registrierung erfolgreich. Bitte jetzt einloggen.";
+          this.activeTab = "login";
+          // optional: Passwort drin lassen oder leeren
+          // this.password = "";
+          return;
+        }
+
+        // Login
+        const res = await fetch(`${backendBase}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: this.username,
+            password: this.password
+          })
+        });
+
+        if (!res.ok) {
+          const body = await this.safeReadBody(res);
+          throw new Error(
+              typeof body === "string"
+                  ? body
+                  : (body?.message || `Login failed (HTTP ${res.status})`)
+          );
+        }
+
+        const body = await this.safeReadBody(res);
+
+        // Erwartet: { username, token } – fallback wenn doch nur Text kommt
+        const data =
+            typeof body === "string"
+                ? { username: this.username, token: body }
+                : body;
+
+        if (!data?.token) {
+          throw new Error("Login erfolgreich, aber kein Token erhalten.");
+        }
+
+        // speichern (Key-Namen bewusst eindeutig)
+        localStorage.setItem("auth_username", data.username || this.username);
+        localStorage.setItem("auth_token", data.token);
+
+        // App informieren + schließen
+        this.$emit("logged-in", data);
+        this.$emit("close");
+      } catch (err) {
+        this.errorMsg = err?.message || String(err);
+      } finally {
+        this.loading = false;
+      }
     }
   }
 };
@@ -84,15 +221,12 @@ export default {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
-
   display: flex;
   justify-content: center;
   align-items: flex-start;
-
-  padding-top: 140px; /* ← HIER steuerst du die Höhe */
+  padding-top: 140px;
   z-index: 9999;
 }
-
 
 .modal {
   width: 100%;
@@ -177,6 +311,31 @@ input:focus {
   border: none;
   cursor: pointer;
   font-weight: 800;
+}
+
+.primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.msg {
+  margin: 0;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  line-height: 1.3;
+}
+
+.err {
+  background: #ffe8e8;
+  color: #8a1f1f;
+  border: 1px solid #ffd0d0;
+}
+
+.ok {
+  background: #eaffea;
+  color: #1f6f2a;
+  border: 1px solid #c9f3cf;
 }
 
 .hint {

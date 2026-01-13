@@ -2,14 +2,48 @@
   <div class="page">
 
     <!-- LOGIN AUF HINTERGRUND -->
-    <button class="login-btn" @click="isLoginOpen = true">
+    <button v-if="!auth.token" class="login-btn" @click="isLoginOpen = true">
       Login
     </button>
+
+    <div v-else class="login-btn user-pill">
+      {{ auth.username }}
+      <button class="logout-mini" @click="logout">Logout</button>
+    </div>
+
 
 
     <div class="shell">
       <header class="hdr">
         <h1>Berlin Places</h1>
+
+        <div class="hdr-actions">
+          <!-- Eingeloggt -->
+          <span
+              v-if="auth.isAuthenticated"
+              class="user-badge"
+          >
+      Hi, {{ auth.username }}
+    </span>
+
+          <button
+              v-if="auth.isAuthenticated"
+              class="login-btn"
+              @click="logout"
+          >
+            Logout
+          </button>
+
+          <!-- Nicht eingeloggt -->
+          <button
+              v-else
+              class="login-btn"
+              @click="isLoginOpen = true"
+          >
+            Login
+          </button>
+
+          <!-- Theme Toggle bleibt immer -->
           <button
               class="theme-toggle"
               @click="toggleTheme"
@@ -17,10 +51,18 @@
           >
             🌓
           </button>
+        </div>
       </header>
 
+
       <!-- Modal -->
-      <LoginModal :open="isLoginOpen" @close="isLoginOpen = false" />
+      <LoginModal
+          :open="isLoginOpen"
+          @close="isLoginOpen = false"
+          @logged-in="onLoggedIn"
+      />
+
+
 
       <!-- Lade- / Fehlermeldungen -->
       <p v-if="loading">Lade Orte vom Server...</p>
@@ -44,12 +86,21 @@ import LoginModal from "./components/LoginModal.vue";
 
 export default {
   name: "App",
-  components: { SwipeDeck, LoginModal },
+  components: {SwipeDeck, LoginModal},
   data() {
     return {
+      /* ---------- UI ---------- */
       theme: "light",
       isLoginOpen: false,
 
+      /* ---------- AUTH ---------- */
+      auth: {
+        username: localStorage.getItem("auth_username"),
+        token: localStorage.getItem("auth_token"),
+        isAuthenticated: !!localStorage.getItem("auth_token"),
+      },
+
+      /* ---------- DATA ---------- */
       places: [],
       totalLikes: 0,
       totalDislikes: 0,
@@ -57,6 +108,7 @@ export default {
       error: null
     };
   },
+
   mounted() {
     const saved = localStorage.getItem("theme");
     if (
@@ -98,7 +150,7 @@ export default {
       localStorage.setItem("theme", this.theme);
     },
 
-    async onRate({ item, like }) {
+    async onRate({item, like}) {
       const backendBase = "https://places-webtech-backend.onrender.com";
 
       const found = this.places.find((p) => p.id === item.id);
@@ -115,13 +167,30 @@ export default {
       const path = like ? `/places/${item.id}/like` : `/places/${item.id}/dislike`;
 
       try {
-        await fetch(backendBase + path, { method: "POST" });
+        await fetch(backendBase + path, {method: "POST"});
       } catch (e) {
         console.error("Fehler beim POST:", e);
       }
+    },
+
+    methods: {
+      // ...
+      onLoggedIn({username, token}) {
+        this.authUsername = username;
+        this.authToken = token;
+        localStorage.setItem("auth_username", username);
+        localStorage.setItem("auth_token", token);
+      },
+
+      logout() {
+        this.authUsername = null;
+        this.authToken = null;
+        localStorage.removeItem("auth_username");
+        localStorage.removeItem("auth_token");
+      }
     }
   }
-};
+}
 </script>
 
 <style>
@@ -276,4 +345,26 @@ body {
   .shell { padding: 2.5rem 3rem; }
   .hdr h1 { font-size: 2.6rem; }
 }
+
+/* ---------- User Pill ---------- */
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+/* ---------- Logout Mini Button ---------- */
+.logout-mini {
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--accent);
+  color: white;
+}
+
 </style>
