@@ -6,27 +6,16 @@
 
         <div class="hdr-actions">
           <!-- Eingeloggt -->
-          <span
-              v-if="auth.isAuthenticated"
-              class="user-badge"
-          >
-      Hi, {{ auth.username }}
-    </span>
+          <span v-if="auth.isAuthenticated" class="user-badge">
+            Hi, {{ auth.username }}
+          </span>
 
-          <button
-              v-if="auth.isAuthenticated"
-              class="login-btn"
-              @click="logout"
-          >
+          <button v-if="auth.isAuthenticated" class="btn" @click="logout">
             Logout
           </button>
 
           <!-- Nicht eingeloggt -->
-          <button
-              v-else
-              class="login-btn"
-              @click="isLoginOpen = true"
-          >
+          <button v-else class="btn" @click="isLoginOpen = true">
             Login
           </button>
 
@@ -41,15 +30,12 @@
         </div>
       </header>
 
-
       <!-- Modal -->
       <LoginModal
           :open="isLoginOpen"
           @close="isLoginOpen = false"
           @logged-in="onLoggedIn"
       />
-
-
 
       <!-- Lade- / Fehlermeldungen -->
       <p v-if="loading">Lade Orte vom Server...</p>
@@ -73,8 +59,12 @@ import LoginModal from "./components/LoginModal.vue";
 
 export default {
   name: "App",
-  components: {SwipeDeck, LoginModal},
+  components: { SwipeDeck, LoginModal },
+
   data() {
+    const token = localStorage.getItem("auth_token");
+    const username = localStorage.getItem("auth_username");
+
     return {
       /* ---------- UI ---------- */
       theme: "light",
@@ -82,9 +72,9 @@ export default {
 
       /* ---------- AUTH ---------- */
       auth: {
-        username: localStorage.getItem("auth_username"),
-        token: localStorage.getItem("auth_token"),
-        isAuthenticated: !!localStorage.getItem("auth_token"),
+        username: username || null,
+        token: token || null,
+        isAuthenticated: !!token,
       },
 
       /* ---------- DATA ---------- */
@@ -92,11 +82,12 @@ export default {
       totalLikes: 0,
       totalDislikes: 0,
       loading: true,
-      error: null
+      error: null,
     };
   },
 
   mounted() {
+    // Theme initialisieren
     const saved = localStorage.getItem("theme");
     if (
         saved === "dark" ||
@@ -106,40 +97,67 @@ export default {
     }
     document.documentElement.setAttribute("data-theme", this.theme);
 
-    fetch("https://places-webtech-backend.onrender.com/places")
+    // Places laden (lokal via .env.local oder Prod via Render)
+    const backendBase = this.getBackendBase();
+
+    fetch(`${backendBase}/places`)
         .then((res) => {
           if (!res.ok) throw new Error("HTTP " + res.status);
           return res.json();
         })
         .then((data) => {
           this.places = data || [];
-
-          this.totalLikes = this.places.reduce(
-              (sum, p) => sum + (p.likeCount ?? 0),
-              0
-          );
-          this.totalDislikes = this.places.reduce(
-              (sum, p) => sum + (p.dislikeCount ?? 0),
-              0
-          );
+          this.totalLikes = this.places.reduce((sum, p) => sum + (p.likeCount ?? 0), 0);
+          this.totalDislikes = this.places.reduce((sum, p) => sum + (p.dislikeCount ?? 0), 0);
           this.loading = false;
         })
         .catch((err) => {
           console.error(err);
-          this.error = err.message;
+          this.error = err.message || String(err);
           this.loading = false;
         });
   },
+
   methods: {
+    getBackendBase() {
+      // DEV (npm run dev): nimm VITE_BACKEND_URL aus .env.local, sonst localhost
+      if (import.meta?.env?.DEV) {
+        return import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+      }
+      // PROD: Render Backend
+      return "https://places-webtech-backend.onrender.com";
+    },
+
     toggleTheme() {
       this.theme = this.theme === "dark" ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", this.theme);
       localStorage.setItem("theme", this.theme);
     },
 
-    async onRate({item, like}) {
-      const backendBase = "https://places-webtech-backend.onrender.com";
+    onLoggedIn({ username, token }) {
+      this.auth.username = username;
+      this.auth.token = token;
+      this.auth.isAuthenticated = true;
 
+      localStorage.setItem("auth_username", username);
+      localStorage.setItem("auth_token", token);
+
+      this.isLoginOpen = false;
+    },
+
+    logout() {
+      this.auth.username = null;
+      this.auth.token = null;
+      this.auth.isAuthenticated = false;
+
+      localStorage.removeItem("auth_username");
+      localStorage.removeItem("auth_token");
+    },
+
+    async onRate({ item, like }) {
+      const backendBase = this.getBackendBase();
+
+      // optimistic UI
       const found = this.places.find((p) => p.id === item.id);
       if (found) {
         if (like) {
@@ -154,30 +172,13 @@ export default {
       const path = like ? `/places/${item.id}/like` : `/places/${item.id}/dislike`;
 
       try {
-        await fetch(backendBase + path, {method: "POST"});
+        await fetch(backendBase + path, { method: "POST" });
       } catch (e) {
         console.error("Fehler beim POST:", e);
       }
     },
-
-    methods: {
-      // ...
-      onLoggedIn({username, token}) {
-        this.authUsername = username;
-        this.authToken = token;
-        localStorage.setItem("auth_username", username);
-        localStorage.setItem("auth_token", token);
-      },
-
-      logout() {
-        this.authUsername = null;
-        this.authToken = null;
-        localStorage.removeItem("auth_username");
-        localStorage.removeItem("auth_token");
-      }
-    }
-  }
-}
+  },
+};
 </script>
 
 <style>
@@ -206,9 +207,13 @@ export default {
 }
 
 /* ---------- Global Layout ---------- */
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body, #app {
+html,
+body,
+#app {
   height: 100%;
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
@@ -224,7 +229,6 @@ body {
 }
 
 .page {
-  position: relative; /* Referenz für Login-Button */
   width: 100%;
   display: flex;
   justify-content: center;
@@ -232,29 +236,8 @@ body {
   padding-right: 80px;
 }
 
-/* LOGIN AUF HINTERGRUND */
-.login-btn {
-  position: absolute;
-  top: 24px;
-  right: -300px;   /* oder 0px */
-
-  z-index: 10;
-  border: none;
-  cursor: pointer;
-  border-radius: 999px;
-  height: 40px;
-  padding: 0 14px;
-  font-size: 14px;
-  font-weight: 700;
-  background: var(--surface-strong);
-  color: var(--text);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-
-
 .shell {
-  position: relative; /* WICHTIG */
+  position: relative;
   width: min(960px, 96vw);
   background: var(--surface);
   backdrop-filter: blur(10px);
@@ -265,7 +248,6 @@ body {
   flex-direction: column;
   align-items: center;
 }
-
 
 /* ---------- Header ---------- */
 .hdr {
@@ -290,6 +272,28 @@ body {
   gap: 10px;
 }
 
+.user-badge {
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface-strong);
+  padding: 8px 12px;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+  height: 40px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--surface-strong);
+  color: var(--text);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
 
 /* ---------- Theme Toggle ---------- */
 .theme-toggle {
@@ -329,29 +333,11 @@ body {
 
 /* ---------- Responsive ---------- */
 @media (min-width: 1200px) {
-  .shell { padding: 2.5rem 3rem; }
-  .hdr h1 { font-size: 2.6rem; }
+  .shell {
+    padding: 2.5rem 3rem;
+  }
+  .hdr h1 {
+    font-size: 2.6rem;
+  }
 }
-
-/* ---------- User Pill ---------- */
-.user-pill {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 10px;
-}
-
-/* ---------- Logout Mini Button ---------- */
-.logout-mini {
-  border: none;
-  cursor: pointer;
-  border-radius: 999px;
-  height: 28px;
-  padding: 0 10px;
-  font-size: 12px;
-  font-weight: 700;
-  background: var(--accent);
-  color: white;
-}
-
 </style>
