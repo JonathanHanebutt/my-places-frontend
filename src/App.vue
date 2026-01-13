@@ -1,18 +1,5 @@
 <template>
   <div class="page">
-
-    <!-- LOGIN AUF HINTERGRUND -->
-    <button v-if="!auth.token" class="login-btn" @click="isLoginOpen = true">
-      Login
-    </button>
-
-    <div v-else class="login-btn user-pill">
-      {{ auth.username }}
-      <button class="logout-mini" @click="logout">Logout</button>
-    </div>
-
-
-
     <div class="shell">
       <header class="hdr">
         <h1>Berlin Places</h1>

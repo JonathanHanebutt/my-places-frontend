@@ -95,14 +95,10 @@ export default {
   },
   methods: {
     getBackendBase() {
-      // robust: funktioniert in Vite, und fällt sonst sauber zurück
-      const fromEnv =
-          (typeof import.meta !== "undefined" &&
-              import.meta.env &&
-              import.meta.env.VITE_BACKEND_URL) ||
-          null;
-
-      return fromEnv || "https://places-webtech-backend.onrender.com";
+      if (import.meta?.env?.DEV) {
+        return import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+      }
+      return import.meta.env.VITE_BACKEND_URL || "https://places-webtech-backend.onrender.com";
     },
 
     resetMessages() {
