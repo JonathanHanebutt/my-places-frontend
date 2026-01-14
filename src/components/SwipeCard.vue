@@ -8,6 +8,16 @@
     <div class="badge like" :style="{ opacity: likeOpacity }">LIKE</div>
     <div class="badge nope" :style="{ opacity: nopeOpacity }">NOPE</div>
 
+    <!-- Info Button -->
+    <button
+      class="info-btn"
+      @click.stop="$emit('view-details', item)"
+      @pointerdown.stop
+      title="Details & Kommentare"
+    >
+      💬
+    </button>
+
     <!-- Inhalt -->
     <img v-if="item.imageLink" class="hero" :src="item.imageLink" :alt="item.name" />
     <div class="content">
@@ -29,7 +39,7 @@ export default {
     interactive: { type: Boolean, default: true }, // nur Top-Karte dragbar
     stackIndex: { type: Number, default: 0 }       // für optischen Stack
   },
-  emits: ["swipe"], // { like: boolean }
+  emits: ["swipe", "view-details"], // { like: boolean }
   data() {
     return {
       x: 0, y: 0, rot: 0,
@@ -194,6 +204,32 @@ h3 {
   background: rgba(225, 29, 72, 0.12);
   border: 2px solid rgba(225, 29, 72, 0.35);
   box-shadow: 0 4px 16px rgba(225, 29, 72, 0.2);
+}
+
+.info-btn {
+  position: absolute;
+  top: 16px;
+  right: 60px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: none;
+  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.info-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Dark mode adjustments */

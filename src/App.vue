@@ -30,11 +30,32 @@
         </div>
       </header>
 
-      <!-- Modal -->
+      <!-- Login Modal -->
       <LoginModal
           :open="isLoginOpen"
           @close="isLoginOpen = false"
           @logged-in="onLoggedIn"
+      />
+
+      <!-- Create Place Modal -->
+      <CreatePlaceModal
+          :open="isCreatePlaceOpen"
+          :authToken="auth.token"
+          :backendBase="getBackendBase()"
+          @close="isCreatePlaceOpen = false"
+          @created="onPlaceCreated"
+      />
+
+      <!-- Place Detail Modal -->
+      <PlaceDetailModal
+          :open="isPlaceDetailOpen"
+          :place="selectedPlace"
+          :isAuthenticated="auth.isAuthenticated"
+          :currentUsername="auth.username"
+          :authToken="auth.token"
+          :backendBase="getBackendBase()"
+          @close="isPlaceDetailOpen = false"
+          @request-login="isPlaceDetailOpen = false; isLoginOpen = true"
       />
 
       <!-- Lade- / Fehlermeldungen -->
@@ -54,12 +75,19 @@
           :likesCount="likedPlaces.length"
           :totalLikes="totalLikes"
           :totalDislikes="totalDislikes"
+          :isAuthenticated="auth.isAuthenticated"
           @navigate="currentView = $event"
+          @create-place="isCreatePlaceOpen = true"
+          @request-login="isLoginOpen = true"
         />
 
         <!-- Swipe Mode -->
         <div v-else-if="currentView === 'swipe'" class="swipe-view">
-          <SwipeDeck :items="swipeStack" @rate="onRate" />
+          <SwipeDeck
+            :items="swipeStack"
+            @rate="onRate"
+            @view-place="openPlaceDetail"
+          />
           <p v-if="swipeStack.length === 0" class="swipe-done">
             🎉 Alle Orte bewertet! Schau dir deine Likes an.
           </p>
@@ -71,6 +99,7 @@
           :likedPlaces="likedPlaces"
           @navigate="currentView = $event"
           @unlike="removeLike"
+          @view-place="openPlaceDetail"
         />
       </template>
     </div>
@@ -90,10 +119,20 @@ import LoginModal from "./components/LoginModal.vue";
 import HomePage from "./components/HomePage.vue";
 import LikesPage from "./components/LikesPage.vue";
 import BottomNav from "./components/BottomNav.vue";
+import CreatePlaceModal from "./components/CreatePlaceModal.vue";
+import PlaceDetailModal from "./components/PlaceDetailModal.vue";
 
 export default {
   name: "App",
-  components: { SwipeDeck, LoginModal, HomePage, LikesPage, BottomNav },
+  components: {
+    SwipeDeck,
+    LoginModal,
+    HomePage,
+    LikesPage,
+    BottomNav,
+    CreatePlaceModal,
+    PlaceDetailModal
+  },
 
   data() {
     const token = localStorage.getItem("auth_token");
@@ -104,6 +143,9 @@ export default {
       /* ---------- UI ---------- */
       theme: "light",
       isLoginOpen: false,
+      isCreatePlaceOpen: false,
+      isPlaceDetailOpen: false,
+      selectedPlace: {},
       currentView: "home", // "home" | "swipe" | "likes"
 
       /* ---------- AUTH ---------- */
@@ -238,6 +280,19 @@ export default {
     removeLike(place) {
       this.likedPlaces = this.likedPlaces.filter(p => p.id !== place.id);
       localStorage.setItem("liked_places", JSON.stringify(this.likedPlaces));
+    },
+
+    openPlaceDetail(place) {
+      this.selectedPlace = place;
+      this.isPlaceDetailOpen = true;
+    },
+
+    onPlaceCreated(newPlace) {
+      // Add to places list
+      this.places.unshift(newPlace);
+      // Update totals
+      this.totalLikes = this.places.reduce((sum, p) => sum + (p.likeCount ?? 0), 0);
+      this.totalDislikes = this.places.reduce((sum, p) => sum + (p.dislikeCount ?? 0), 0);
     }
   },
 };

@@ -23,6 +23,7 @@
         v-for="place in likedPlaces"
         :key="place.id"
         class="like-card"
+        @click="$emit('view-place', place)"
       >
         <img
           v-if="place.imageLink"
@@ -38,12 +39,13 @@
           <div class="like-meta">
             <span>⭐ {{ place.rating }}</span>
             <span>👍 {{ place.likeCount ?? 0 }}</span>
+            <span class="comment-hint">💬 Kommentare</span>
           </div>
         </div>
 
         <button
           class="remove-btn"
-          @click="$emit('unlike', place)"
+          @click.stop="$emit('unlike', place)"
           title="Aus Likes entfernen"
         >
           ✕
@@ -59,7 +61,7 @@ export default {
   props: {
     likedPlaces: { type: Array, default: () => [] }
   },
-  emits: ["navigate", "unlike"]
+  emits: ["navigate", "unlike", "view-place"]
 };
 </script>
 
@@ -196,11 +198,17 @@ export default {
   border-radius: 20px;
   border: 1px solid var(--border-glass);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 
 .like-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-glow);
+}
+
+.comment-hint {
+  color: var(--accent);
+  font-size: 0.8rem;
 }
 
 .like-image {

@@ -8,6 +8,7 @@
         :interactive="i === stack.length - 1"
         :stackIndex="(stack.length - 1) - i"
         @swipe="onSwipe"
+        @view-details="$emit('view-place', $event)"
       />
     </div>
 
@@ -30,7 +31,7 @@ export default {
   props: {
     items: { type: Array, required: true }
   },
-  emits: ["rate"], // { item, like }
+  emits: ["rate", "view-place"], // { item, like }
   data() {
     return { stack: [] };
   },

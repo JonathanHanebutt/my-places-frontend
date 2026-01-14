@@ -7,6 +7,19 @@
       <p class="hero-subtitle">
         Swipe durch die besten Orte der Stadt und erstelle deine persönliche Favoritenliste
       </p>
+
+      <!-- Create Place Button -->
+      <button
+        v-if="isAuthenticated"
+        class="create-btn"
+        @click="$emit('create-place')"
+      >
+        ➕ Neuen Ort erstellen
+      </button>
+      <p v-else class="login-hint">
+        <button class="link-btn" @click="$emit('request-login')">Anmelden</button>
+        um eigene Orte zu erstellen
+      </p>
     </div>
 
     <!-- Feature Cards -->
@@ -53,9 +66,10 @@ export default {
     placesCount: { type: Number, default: 0 },
     likesCount: { type: Number, default: 0 },
     totalLikes: { type: Number, default: 0 },
-    totalDislikes: { type: Number, default: 0 }
+    totalDislikes: { type: Number, default: 0 },
+    isAuthenticated: { type: Boolean, default: false }
   },
-  emits: ["navigate"]
+  emits: ["navigate", "create-place", "request-login"]
 };
 </script>
 
@@ -113,6 +127,45 @@ export default {
   font-size: 1.1rem;
   line-height: 1.6;
   max-width: 400px;
+}
+
+.create-btn {
+  margin-top: 20px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px var(--glow);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.create-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 28px var(--glow);
+}
+
+.create-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.login-hint {
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
 }
 
 /* Feature Cards */
