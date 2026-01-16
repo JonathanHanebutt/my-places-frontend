@@ -4,29 +4,32 @@
     :style="cardStyle"
     @pointerdown="onPointerDown"
   >
-    <!-- Badges -->
-    <div class="badge like" :style="{ opacity: likeOpacity }">LIKE</div>
-    <div class="badge nope" :style="{ opacity: nopeOpacity }">NOPE</div>
+    <!-- Swipe Indicators -->
+    <div class="indicator like" :style="{ opacity: likeOpacity }">LIKE</div>
+    <div class="indicator nope" :style="{ opacity: nopeOpacity }">NOPE</div>
 
     <!-- Info Button -->
     <button
       class="info-btn"
       @click.stop="$emit('view-details', item)"
       @pointerdown.stop
-      title="Details & Kommentare"
     >
       💬
     </button>
 
-    <!-- Inhalt -->
-    <img v-if="item.imageLink" class="hero" :src="item.imageLink" :alt="item.name" />
-    <div class="content">
-      <h3>{{ item.name }}</h3>
-      <p class="desc" v-if="item.description">{{ item.description }}</p>
-      <p class="meta">
-        ⭐ {{ item.rating }} • 👍 {{ item.likeCount ?? 0 }} • 👎 {{ item.dislikeCount ?? 0 }}
-      </p>
+    <!-- Image -->
+    <img v-if="item.imageLink" class="card-image" :src="item.imageLink" :alt="item.name" />
+    <div v-else class="card-image placeholder">📍</div>
 
+    <!-- Content -->
+    <div class="card-content">
+      <h3 class="card-title">{{ item.name }}</h3>
+      <p class="card-desc" v-if="item.description">{{ item.description }}</p>
+      <div class="card-stats">
+        <span>⭐ {{ item.rating || '-' }}</span>
+        <span>👍 {{ item.likeCount ?? 0 }}</span>
+        <span>👎 {{ item.dislikeCount ?? 0 }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -36,10 +39,10 @@ export default {
   name: "SwipeCard",
   props: {
     item: { type: Object, required: true },
-    interactive: { type: Boolean, default: true }, // nur Top-Karte dragbar
-    stackIndex: { type: Number, default: 0 }       // für optischen Stack
+    interactive: { type: Boolean, default: true },
+    stackIndex: { type: Number, default: 0 }
   },
-  emits: ["swipe", "view-details"], // { like: boolean }
+  emits: ["swipe", "view-details"],
   data() {
     return {
       x: 0, y: 0, rot: 0,
@@ -49,17 +52,18 @@ export default {
     };
   },
   computed: {
-    likeOpacity() { return Math.min(Math.max(this.x, 0) / 140, 1); },
-    nopeOpacity() { return Math.min(Math.max(-this.x, 0) / 140, 1); },
+    likeOpacity() { return Math.min(Math.max(this.x, 0) / 120, 1); },
+    nopeOpacity() { return Math.min(Math.max(-this.x, 0) / 120, 1); },
     cardStyle() {
       const base = `translate(${this.x}px, ${this.y}px) rotate(${this.rot}deg)`;
-      const stackOffset = ` translateY(${this.stackIndex * 6}px) scale(${1 - this.stackIndex * 0.02})`;
+      const stackOffset = ` translateY(${this.stackIndex * 8}px) scale(${1 - this.stackIndex * 0.03})`;
       return {
         transform: base + stackOffset,
         transition: this.releaseAnim ? "transform .25s ease" : "none",
         cursor: this.interactive ? "grab" : "default",
         pointerEvents: this.interactive ? "auto" : "none",
-        zIndex: 100 - this.stackIndex
+        zIndex: 100 - this.stackIndex,
+        opacity: this.stackIndex > 2 ? 0 : 1
       };
     }
   },
@@ -79,21 +83,18 @@ export default {
       const dy = e.clientY - this.startY;
       this.x = dx;
       this.y = dy;
-      this.rot = dx / 15; // kleiner Tilt
+      this.rot = dx / 18;
     },
     onPointerUp() {
       this.dragging = false;
-      const threshold = 120;
+      const threshold = 100;
       if (this.x > threshold) {
-        // like: fliegt nach rechts raus
         this.flyOut(1);
-        setTimeout(() => this.$emit("swipe", { like: true }), 220);
+        setTimeout(() => this.$emit("swipe", { like: true }), 200);
       } else if (this.x < -threshold) {
-        // dislike: links raus
         this.flyOut(-1);
-        setTimeout(() => this.$emit("swipe", { like: false }), 220);
+        setTimeout(() => this.$emit("swipe", { like: false }), 200);
       } else {
-        // reset zur Mitte
         this.releaseAnim = true;
         this.x = 0; this.y = 0; this.rot = 0;
         setTimeout(() => (this.releaseAnim = false), 260);
@@ -102,9 +103,8 @@ export default {
     },
     flyOut(dir) {
       this.releaseAnim = true;
-      this.x = dir * 500;
-      this.y = this.y; // behalte y für natürliche Flugbahn
-      this.rot = dir * 20;
+      this.x = dir * 400;
+      this.rot = dir * 25;
     }
   }
 };
@@ -114,139 +114,115 @@ export default {
 .swipe-card {
   position: absolute;
   inset: 0;
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border-radius: var(--radius, 20px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  box-shadow: var(--shadow);
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-float);
   overflow: hidden;
   user-select: none;
   display: flex;
   flex-direction: column;
 }
 
-.hero {
+.card-image {
   width: 100%;
-  height: 55%;
+  height: 60%;
   object-fit: cover;
-  border-bottom: 1px solid var(--border, rgba(22, 163, 74, 0.1));
 }
 
-.content {
+.card-image.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-secondary);
+  font-size: 64px;
+}
+
+.card-content {
   padding: 20px;
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
-h3 {
+.card-title {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text, #1a1a1a);
+  color: var(--text);
 }
 
-.desc {
-  color: var(--text-muted, #4b5563);
+.card-desc {
   margin: 0;
-  line-height: 1.5;
-  font-size: 0.95rem;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.4;
   flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.meta {
-  color: var(--text, #1a1a1a);
-  font-weight: 600;
-  font-size: 0.9rem;
+.card-stats {
   display: flex;
-  gap: 12px;
-  padding: 10px 14px;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
-  border-radius: var(--radius-sm, 12px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.1));
-  width: fit-content;
+  gap: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-tertiary);
 }
 
-.badge {
+/* Indicators */
+.indicator {
   position: absolute;
-  top: 16px;
-  padding: 10px 16px;
-  border-radius: var(--radius-sm, 12px);
+  top: 20px;
+  padding: 10px 20px;
+  border-radius: var(--radius);
   font-weight: 800;
-  font-size: 0.9rem;
-  letter-spacing: .08em;
+  font-size: 18px;
+  letter-spacing: 1px;
   opacity: 0;
   pointer-events: none;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: opacity 0.15s ease;
+  z-index: 10;
 }
 
-.badge.like {
-  left: 16px;
-  color: #16a34a;
-  background: rgba(22, 163, 74, 0.15);
-  border: 2px solid rgba(22, 163, 74, 0.4);
-  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.2);
+.indicator.like {
+  left: 20px;
+  background: var(--success);
+  color: white;
 }
 
-.badge.nope {
-  right: 16px;
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.12);
-  border: 2px solid rgba(220, 38, 38, 0.35);
-  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2);
+.indicator.nope {
+  right: 20px;
+  background: var(--error);
+  color: white;
 }
 
+/* Info Button */
 .info-btn {
   position: absolute;
   top: 16px;
-  right: 60px;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full, 9999px);
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
   border: none;
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  font-size: 1.1rem;
+  background: var(--surface);
+  font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow);
-  transition: all var(--transition, 0.25s ease);
-  z-index: 10;
+  transition: transform var(--transition);
+  z-index: 20;
 }
 
 .info-btn:hover {
   transform: scale(1.1);
-  box-shadow: var(--shadow-glow);
 }
 
-.info-btn:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-/* Dark mode */
-[data-theme="dark"] .swipe-card {
-  background: var(--surface-strong, rgba(30, 45, 38, 0.9));
-  border-color: var(--border, rgba(74, 222, 128, 0.15));
-}
-
-[data-theme="dark"] .badge.like {
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.15);
-  border-color: rgba(74, 222, 128, 0.4);
-}
-
-[data-theme="dark"] .badge.nope {
-  color: #f87171;
-  background: rgba(248, 113, 113, 0.12);
-  border-color: rgba(248, 113, 113, 0.35);
+.info-btn:active {
+  transform: scale(0.95);
 }
 </style>

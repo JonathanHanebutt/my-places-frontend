@@ -3,9 +3,8 @@
     class="theme-toggle"
     @click="toggle"
     :aria-label="isDark ? 'Zu hellem Modus wechseln' : 'Zu dunklem Modus wechseln'"
-    :title="isDark ? 'Heller Modus' : 'Dunkler Modus'"
   >
-    <span class="theme-toggle-icon">{{ isDark ? '☀️' : '🌙' }}</span>
+    <span class="toggle-icon">{{ isDark ? '☀️' : '🌙' }}</span>
   </button>
 </template>
 
@@ -47,32 +46,25 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius, 16px);
+  border: none;
+  background: var(--surface-secondary);
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition);
 }
 
 .theme-toggle:hover {
-  transform: translateY(-2px) rotate(15deg);
-  box-shadow: var(--shadow-glow, 0 8px 32px rgba(22, 163, 74, 0.2));
-}
-
-.theme-toggle:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring, 0 0 0 3px rgba(22, 163, 74, 0.5));
+  background: var(--border);
 }
 
 .theme-toggle:active {
-  transform: translateY(0) scale(0.95);
+  transform: scale(0.95);
 }
 
-.theme-toggle-icon {
+.toggle-icon {
   font-size: 20px;
-  line-height: 1;
 }
 </style>
 

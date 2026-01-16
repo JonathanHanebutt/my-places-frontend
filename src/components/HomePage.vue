@@ -1,61 +1,59 @@
 <template>
   <div class="home">
-    <!-- Hero Section -->
-    <div class="hero">
-      <div class="hero-icon">📍</div>
-      <h2 class="hero-title">Entdecke Berlin</h2>
-      <p class="hero-subtitle">
-        Swipe durch die besten Orte der Stadt und erstelle deine persönliche Favoritenliste
-      </p>
-
-      <!-- Create Place Button -->
-      <button
-        v-if="isAuthenticated"
-        class="create-btn"
-        @click="$emit('create-place')"
-      >
-        ➕ Neuen Ort erstellen
-      </button>
-      <p v-else class="login-hint">
-        <button class="link-btn" @click="$emit('request-login')">Anmelden</button>
-        um eigene Orte zu erstellen
-      </p>
-    </div>
-
-    <!-- Feature Cards -->
-    <div class="features">
-      <button class="feature-card" @click="$emit('navigate', 'swipe')">
-        <div class="feature-icon">👆</div>
-        <h3>Swipe Mode</h3>
-        <p>Entdecke neue Orte durch Swipen</p>
-        <span class="feature-badge">{{ placesCount }} Orte</span>
-      </button>
-
-      <button class="feature-card" @click="$emit('navigate', 'likes')">
-        <div class="feature-icon">❤️</div>
-        <h3>Meine Likes</h3>
-        <p>Deine Lieblingsorte auf einen Blick</p>
-        <span class="feature-badge">{{ likesCount }} gespeichert</span>
-      </button>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="quick-stats">
-      <div class="stat">
-        <span class="stat-value">{{ totalLikes }}</span>
-        <span class="stat-label">Gesamt Likes</span>
+    <!-- Welcome Section -->
+    <section class="welcome-card">
+      <div class="welcome-icon">📍</div>
+      <div class="welcome-content">
+        <h2>Willkommen zurück!</h2>
+        <p>Entdecke neue Orte in Berlin</p>
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
+      <button v-if="isAuthenticated" class="create-btn" @click="$emit('create-place')">
+        + Neuer Ort
+      </button>
+      <button v-else class="login-btn" @click="$emit('request-login')">
+        Anmelden
+      </button>
+    </section>
+
+    <!-- Stats Dashboard -->
+    <section class="stats-grid">
+      <div class="stat-card">
         <span class="stat-value">{{ placesCount }}</span>
         <span class="stat-label">Orte</span>
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <span class="stat-value">{{ totalDislikes }}</span>
-        <span class="stat-label">Gesamt Dislikes</span>
+      <div class="stat-card">
+        <span class="stat-value">{{ likesCount }}</span>
+        <span class="stat-label">Deine Likes</span>
       </div>
-    </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ totalLikes }}</span>
+        <span class="stat-label">Community Likes</span>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="actions-section">
+      <h3 class="section-title">Schnellzugriff</h3>
+      <div class="action-list">
+        <button class="action-item" @click="$emit('navigate', 'swipe')">
+          <span class="action-icon">👆</span>
+          <div class="action-content">
+            <span class="action-title">Swipe Modus</span>
+            <span class="action-desc">Entdecke neue Orte</span>
+          </div>
+          <span class="action-arrow">›</span>
+        </button>
+
+        <button class="action-item" @click="$emit('navigate', 'likes')">
+          <span class="action-icon">❤️</span>
+          <div class="action-content">
+            <span class="action-title">Meine Favoriten</span>
+            <span class="action-desc">{{ likesCount }} gespeichert</span>
+          </div>
+          <span class="action-arrow">›</span>
+        </button>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -76,274 +74,195 @@ export default {
 <style scoped>
 .home {
   width: 100%;
-  max-width: var(--container-max, 1400px);
+  max-width: 600px;
   margin: 0 auto;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 20px;
   animation: fadeIn 0.4s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Hero Section */
-.hero {
-  text-align: center;
-  padding: 48px 32px;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius, 20px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-}
-
-.hero-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.hero-title {
-  margin: 0 0 14px;
-  font-size: 2.5rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--primary, #16a34a) 0%, var(--primary-soft, #22c55e) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero-subtitle {
-  margin: 0 auto;
-  color: var(--text-muted, #4b5563);
-  font-size: 1.1rem;
-  line-height: 1.6;
-  max-width: 400px;
-}
-
-.create-btn {
-  margin-top: 20px;
-  padding: 14px 28px;
-  background: linear-gradient(135deg, var(--primary, #16a34a) 0%, var(--primary-soft, #22c55e) 100%);
-  color: var(--primary-contrast, #ffffff);
-  border: none;
-  border-radius: var(--radius-full, 9999px);
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 4px 20px var(--primary-glow, rgba(22, 163, 74, 0.25));
-  transition: all var(--transition, 0.25s ease);
-}
-
-.create-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 8px 28px var(--primary-glow);
-}
-
-.create-btn:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-.create-btn:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.login-hint {
-  margin: 16px 0 0;
-  font-size: 0.9rem;
-  color: var(--text-muted, #4b5563);
-}
-
-.link-btn {
-  background: none;
-  border: none;
-  color: var(--primary, #16a34a);
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: inherit;
-}
-
-/* Feature Cards */
-.features {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  flex: 1;
-}
-
-.feature-card {
-  position: relative;
-  padding: 36px 28px;
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border-radius: var(--radius, 20px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  text-align: left;
-  transition: all var(--transition, 0.25s ease);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  min-height: 200px;
-}
-
-.feature-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius, 20px);
-  padding: 1.5px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0.1) 50%,
-    var(--primary-soft, #22c55e) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.feature-card:hover::before {
-  opacity: 1;
-}
-
-.feature-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: var(--shadow-glow), var(--shadow-lg);
-  border-color: var(--primary, #16a34a);
-}
-
-.feature-card:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring), var(--shadow-glow);
-}
-
-.feature-card:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.feature-icon {
-  font-size: 44px;
-  margin-bottom: 18px;
-}
-
-.feature-card h3 {
-  margin: 0 0 10px;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text, #1a1a1a);
-}
-
-.feature-card p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: var(--text-muted, #4b5563);
-  line-height: 1.5;
-  flex: 1;
-}
-
-.feature-badge {
-  display: inline-block;
-  margin-top: 16px;
-  padding: 8px 14px;
-  background: rgba(22, 163, 74, 0.1);
-  border-radius: var(--radius-full, 9999px);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--primary, #16a34a);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-}
-
-/* Quick Stats */
-.quick-stats {
+/* Welcome Card */
+.welcome-card {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 32px;
-  padding: 24px 36px;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius, 20px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
+  gap: 16px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
 }
 
-.stat {
+.welcome-icon {
+  font-size: 40px;
+}
+
+.welcome-content {
+  flex: 1;
+}
+
+.welcome-content h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.welcome-content p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-tertiary);
+}
+
+.create-btn,
+.login-btn {
+  padding: 10px 18px;
+  background: var(--primary);
+  color: var(--text-on-primary);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.create-btn:hover,
+.login-btn:hover {
+  background: var(--primary-hover);
+}
+
+.create-btn:active,
+.login-btn:active {
+  transform: scale(0.96);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  padding: 20px 16px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
 }
 
 .stat-value {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--text);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
 }
 
 .stat-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.5px;
 }
 
-.stat-divider {
-  width: 1px;
-  height: 44px;
-  background: var(--border-glass);
+/* Actions Section */
+.actions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  padding-left: 4px;
+}
+
+.action-list {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--separator);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+
+.action-item:last-child {
+  border-bottom: none;
+}
+
+.action-item:hover {
+  background: var(--surface-secondary);
+}
+
+.action-item:active {
+  background: var(--border);
+}
+
+.action-icon {
+  font-size: 28px;
+}
+
+.action-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.action-title {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.action-desc {
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+.action-arrow {
+  font-size: 22px;
+  color: var(--text-tertiary);
+  font-weight: 300;
 }
 
 /* Responsive */
-@media (max-width: 640px) {
-  .hero {
-    padding: 32px 20px;
+@media (max-width: 480px) {
+  .welcome-card {
+    flex-wrap: wrap;
   }
 
-  .hero-title {
-    font-size: 1.8rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-
-  .features {
-    grid-template-columns: 1fr;
-  }
-
-  .feature-card {
-    min-height: 160px;
-    padding: 28px 24px;
-  }
-
-  .quick-stats {
-    gap: 20px;
-    padding: 20px 24px;
-  }
-
-  .stat-value {
-    font-size: 1.4rem;
+  .create-btn,
+  .login-btn {
+    width: 100%;
+    text-align: center;
   }
 }
 </style>

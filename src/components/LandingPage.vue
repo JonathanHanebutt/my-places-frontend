@@ -1,81 +1,74 @@
 <template>
   <div class="landing">
-    <!-- Header with Theme Toggle -->
-    <header class="landing-header">
-      <div class="logo">🏙️ Berlin Places</div>
+    <!-- Floating Header -->
+    <header class="floating-header">
+      <span class="logo">🏙️ Berlin Places</span>
       <ThemeToggle />
     </header>
 
     <!-- Hero Section -->
-    <div class="hero">
-      <div class="hero-icon">🏙️</div>
-      <h1 class="hero-title">Berlin Places</h1>
+    <section class="hero-section">
+      <div class="hero-badge">Entdecke Berlin</div>
+      <h1 class="hero-title">Finde deine<br/>Lieblingsorte</h1>
       <p class="hero-subtitle">
-        Entdecke die besten Orte Berlins, bewerte sie und erstelle deine persönliche Favoritenliste.
+        Swipe durch die besten Locations, speichere Favoriten und teile deine Erfahrungen.
       </p>
+    </section>
+
+    <!-- Feature Dashboard -->
+    <section class="dashboard">
+      <button class="feature-widget large" @click="$emit('browse'); $emit('navigate', 'swipe')">
+        <div class="widget-icon">👆</div>
+        <div class="widget-content">
+          <h3>Swipe & Entdecke</h3>
+          <p>Finde neue Orte durch intuitives Swipen</p>
+        </div>
+        <span class="widget-arrow">→</span>
+      </button>
+
+      <button class="feature-widget" @click="$emit('browse'); $emit('navigate', 'likes')">
+        <div class="widget-icon">❤️</div>
+        <div class="widget-content">
+          <h3>Favoriten</h3>
+          <p>Deine gespeicherten Orte</p>
+        </div>
+        <span class="widget-arrow">→</span>
+      </button>
+
+      <button class="feature-widget" @click="$emit('browse'); $emit('navigate', 'swipe')">
+        <div class="widget-icon">💬</div>
+        <div class="widget-content">
+          <h3>Kommentare</h3>
+          <p>Lies und teile Bewertungen</p>
+        </div>
+        <span class="widget-arrow">→</span>
+      </button>
+
+      <button class="feature-widget accent" @click="$emit('login')">
+        <div class="widget-icon">📍</div>
+        <div class="widget-content">
+          <h3>Ort erstellen</h3>
+          <p>Teile deine Geheimtipps</p>
+        </div>
+        <span class="widget-arrow">→</span>
+      </button>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <button class="cta-primary" @click="$emit('login')">
+        Jetzt anmelden
+      </button>
+      <button class="cta-secondary" @click="$emit('browse')">
+        Als Gast stöbern
+      </button>
+    </section>
+
+    <!-- Info Banner -->
+    <div class="info-banner">
+      <span class="info-icon">💡</span>
+      <span>Als angemeldeter Nutzer werden deine Likes gespeichert.</span>
     </div>
-
-    <!-- Features - Clickable Cards -->
-    <div class="features-grid">
-      <button
-        class="feature card-interactive"
-        @click="$emit('browse'); $emit('navigate', 'swipe')"
-        aria-label="Zum Swipe-Modus"
-      >
-        <span class="feature-icon">👆</span>
-        <h3>Swipe & Entdecke</h3>
-        <p>Swipe durch hunderte Orte und finde deine neuen Lieblingsplätze</p>
-        <span class="feature-arrow">→</span>
-      </button>
-
-      <button
-        class="feature card-interactive"
-        @click="$emit('browse'); $emit('navigate', 'likes')"
-        aria-label="Zu meinen Favoriten"
-      >
-        <span class="feature-icon">❤️</span>
-        <h3>Speichere Favoriten</h3>
-        <p>Alle deine Likes werden in deinem Profil gespeichert</p>
-        <span class="feature-arrow">→</span>
-      </button>
-
-      <button
-        class="feature card-interactive"
-        @click="$emit('browse'); $emit('navigate', 'swipe')"
-        aria-label="Orte kommentieren"
-      >
-        <span class="feature-icon">💬</span>
-        <h3>Kommentiere</h3>
-        <p>Teile deine Erfahrungen und lies Bewertungen anderer</p>
-        <span class="feature-arrow">→</span>
-      </button>
-
-      <button
-        class="feature card-interactive"
-        @click="$emit('login')"
-        aria-label="Neuen Ort erstellen"
-      >
-        <span class="feature-icon">📍</span>
-        <h3>Erstelle Orte</h3>
-        <p>Füge eigene Geheimtipps hinzu und teile sie mit der Community</p>
-        <span class="feature-arrow">→</span>
-      </button>
-    </div>
-
-    <!-- CTA Buttons -->
-    <div class="cta-section">
-      <button class="cta-btn primary" @click="$emit('login')">
-        🔐 Anmelden / Registrieren
-      </button>
-      <button class="cta-btn secondary" @click="$emit('browse')">
-        👀 Erst mal stöbern
-      </button>
-    </div>
-
-    <!-- Info Note -->
-    <p class="info-note">
-      💡 Als Gast kannst du Orte ansehen, aber deine Likes werden nicht gespeichert.
-    </p>
   </div>
 </template>
 
@@ -92,244 +85,237 @@ export default {
 <style scoped>
 .landing {
   width: 100%;
-  max-width: var(--container-max, 1400px);
+  max-width: 800px;
   margin: 0 auto;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  padding: 0 var(--container-padding, 24px) 40px;
-  animation: fadeIn 0.5s ease;
+  gap: 24px;
+  animation: fadeIn 0.4s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Landing Header */
-.landing-header {
-  width: 100%;
+/* Floating Header */
+.floating-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
 }
 
 .logo {
-  font-size: 1.25rem;
+  font-size: 18px;
   font-weight: 700;
-  color: var(--primary, #16a34a);
+  color: var(--text);
 }
 
-/* Hero */
-.hero {
+/* Hero Section */
+.hero-section {
   text-align: center;
-  padding: 20px;
+  padding: 40px 20px;
 }
 
-.hero-icon {
-  font-size: 80px;
+.hero-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--primary);
+  color: var(--text-on-primary);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-full);
   margin-bottom: 20px;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .hero-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -1px;
   margin: 0 0 16px;
-  font-size: 3.5rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--primary, #16a34a) 0%, var(--primary-light, #4ade80) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .hero-subtitle {
-  margin: 0;
-  font-size: 1.25rem;
-  color: var(--text-muted, #4b5563);
-  line-height: 1.6;
-  max-width: 550px;
-}
-
-/* Features Grid */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  width: 100%;
-}
-
-.feature {
-  position: relative;
-  padding: 28px 24px;
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius, 20px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.feature:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-glow, 0 8px 32px rgba(22, 163, 74, 0.2));
-  border-color: var(--primary, #16a34a);
-}
-
-.feature:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring, 0 0 0 3px rgba(22, 163, 74, 0.5)), var(--shadow-glow);
-}
-
-.feature:active {
-  transform: translateY(-2px) scale(0.98);
-}
-
-.feature-icon {
-  font-size: 40px;
-  display: block;
-  margin-bottom: 14px;
-}
-
-.feature h3 {
-  margin: 0 0 8px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text, #1a1a1a);
-}
-
-.feature p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--text-muted, #4b5563);
+  font-size: 18px;
+  color: var(--text-secondary);
   line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-.feature-arrow {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  font-size: 1rem;
-  color: var(--primary, #16a34a);
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: all 0.2s ease;
+/* Dashboard Grid */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
-.feature:hover .feature-arrow {
-  opacity: 1;
-  transform: translateX(0);
+.feature-widget {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: none;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-widget.large {
+  grid-column: span 2;
+  padding: 24px;
+}
+
+.feature-widget.accent {
+  background: var(--primary);
+}
+
+.feature-widget.accent .widget-content h3,
+.feature-widget.accent .widget-content p,
+.feature-widget.accent .widget-arrow {
+  color: var(--text-on-primary);
+}
+
+.feature-widget:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-widget:active {
+  transform: scale(0.98);
+}
+
+.widget-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.feature-widget.large .widget-icon {
+  font-size: 40px;
+}
+
+.widget-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.widget-content h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.widget-content p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.widget-arrow {
+  font-size: 20px;
+  color: var(--text-tertiary);
+  transition: transform var(--transition);
+}
+
+.feature-widget:hover .widget-arrow {
+  transform: translateX(4px);
 }
 
 /* CTA Section */
 .cta-section {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 20px;
 }
 
-.cta-btn {
-  padding: 16px 36px;
-  border-radius: var(--radius-full, 9999px);
-  font-size: 1.05rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+.cta-primary {
+  width: 100%;
+  padding: 18px 24px;
+  background: var(--primary);
+  color: var(--text-on-primary);
+  font-size: 17px;
+  font-weight: 600;
   border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: var(--shadow);
 }
 
-.cta-btn.primary {
-  background: linear-gradient(135deg, var(--primary, #16a34a) 0%, var(--primary-soft, #22c55e) 100%);
-  color: var(--primary-contrast, #ffffff);
-  box-shadow: 0 4px 20px var(--primary-glow, rgba(22, 163, 74, 0.25));
+.cta-primary:hover {
+  background: var(--primary-hover);
+  transform: scale(1.02);
 }
 
-.cta-btn.primary:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 30px var(--primary-glow);
+.cta-primary:active {
+  transform: scale(0.98);
 }
 
-.cta-btn.secondary {
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
-  color: var(--text, #1a1a1a);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+.cta-secondary {
+  width: 100%;
+  padding: 18px 24px;
+  background: var(--surface);
+  color: var(--primary);
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: var(--shadow);
 }
 
-.cta-btn.secondary:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow, 0 4px 6px rgba(0, 0, 0, 0.04));
-  border-color: var(--primary, #16a34a);
+.cta-secondary:hover {
+  background: var(--surface-secondary);
 }
 
-.cta-btn:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+/* Info Banner */
+.info-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--surface-secondary);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 
-.cta-btn:active {
-  transform: translateY(0) scale(0.98);
-}
-
-/* Info Note */
-.info-note {
-  margin: 0;
-  padding: 16px 24px;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
-  border-radius: var(--radius-sm, 12px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  font-size: 0.95rem;
-  color: var(--text-muted, #4b5563);
-  text-align: center;
+.info-icon {
+  font-size: 20px;
 }
 
 /* Responsive */
-@media (max-width: 1100px) {
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .landing {
-    gap: 28px;
-  }
-
-  .hero-icon {
-    font-size: 56px;
-  }
-
+@media (max-width: 600px) {
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 32px;
   }
 
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-
-  .features-grid {
+  .dashboard {
     grid-template-columns: 1fr;
   }
 
-  .cta-section {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .cta-btn {
-    width: 100%;
-    padding: 14px 28px;
+  .feature-widget.large {
+    grid-column: span 1;
   }
 }
 </style>

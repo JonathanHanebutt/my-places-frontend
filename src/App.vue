@@ -338,189 +338,138 @@ export default {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: var(--container-padding, 24px);
+  padding: var(--container-padding, 20px);
   padding-bottom: 100px;
 }
 
 .shell {
   position: relative;
   width: 100%;
-  max-width: var(--container-max, 1400px);
+  max-width: var(--container-max, 1200px);
   min-height: calc(100vh - 140px);
-  background: var(--surface, rgba(255, 255, 255, 0.7));
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border-radius: var(--radius-lg, 28px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  box-shadow: var(--shadow);
-  padding: 24px 32px 32px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-slow, 0.3s ease);
 }
 
-/* Landing Page Shell - zentriert den Inhalt */
+/* Landing Page Shell */
 .shell-landing {
-  justify-content: center;
-  padding: var(--container-padding);
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  justify-content: flex-start;
+  padding-top: 20px;
 }
 
-.shell-landing::before {
-  display: none;
-}
-
-.shell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-lg);
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(22, 163, 74, 0.1) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-/* ---------- Header ---------- */
+/* ---------- Floating Header ---------- */
 .hdr {
   width: 100%;
+  max-width: 800px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
 }
 
 .hdr h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text);
+  cursor: pointer;
 }
 
 .hdr-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .user-badge {
   font-weight: 600;
   font-size: 14px;
   color: var(--text);
-  background: var(--surface-strong);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border-glass);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  background: var(--surface-secondary);
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
 }
 
 .guest-badge {
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--text-muted);
-  background: var(--surface-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 10px 16px;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  background: var(--surface-secondary);
+  padding: 8px 14px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--border);
 }
 
 /* ---------- Buttons ---------- */
 .btn {
-  border: 1px solid var(--border);
+  border: none;
   cursor: pointer;
-  border-radius: var(--radius-full);
-  height: 42px;
-  padding: 0 18px;
-  font-size: 14px;
+  border-radius: var(--radius);
+  height: 40px;
+  padding: 0 16px;
+  font-size: 15px;
   font-weight: 600;
-  background: var(--surface-strong);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--surface-secondary);
   color: var(--text);
   box-shadow: var(--shadow);
   transition: all var(--transition);
 }
 
 .btn.primary-btn {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
-  color: var(--primary-contrast);
-  border: none;
-  box-shadow: 0 4px 16px var(--primary-glow);
+  background: var(--primary);
+  color: var(--text-on-primary);
 }
 
 .btn.primary-btn:hover {
-  box-shadow: 0 6px 24px var(--primary-glow);
+  background: var(--primary-hover);
 }
 
 .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.btn:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+  background: var(--border);
 }
 
 .btn:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.96);
 }
 
-/* ---------- Footer ---------- */
-.stats {
-  margin-top: 1.5rem;
-  color: var(--text-muted);
-  font-weight: 600;
-  font-size: 14px;
-  text-align: center;
-  background: var(--surface-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  transition: all var(--transition);
+/* ---------- Loading & Error States ---------- */
+.loading-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  font-size: 17px;
+  color: var(--text-secondary);
 }
 
 .error {
-  color: var(--error, #ef4444);
+  color: var(--error);
   font-weight: 600;
   text-align: center;
-  background: rgba(220, 38, 38, 0.1);
-  padding: 1rem 1.5rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(220, 38, 38, 0.2);
+  background: rgba(255, 59, 48, 0.1);
+  padding: 16px 20px;
+  border-radius: var(--radius);
 }
 
-/* Loading state */
-p {
-  color: var(--text-muted);
-  font-weight: 500;
+/* Swipe View */
+.swipe-view {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.swipe-done {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 17px;
+  color: var(--text-secondary);
 }
 
 .loading-text {
