@@ -60,13 +60,13 @@ export default {
 <style scoped>
 .landing {
   width: 100%;
-  max-width: 900px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
-  padding: 20px;
+  gap: 48px;
+  padding: 40px;
   animation: fadeIn 0.5s ease;
 }
 
@@ -78,12 +78,12 @@ export default {
 /* Hero */
 .hero {
   text-align: center;
-  padding: 40px 20px;
+  padding: 20px;
 }
 
 .hero-icon {
-  font-size: 80px;
-  margin-bottom: 20px;
+  font-size: 100px;
+  margin-bottom: 24px;
   animation: float 3s ease-in-out infinite;
 }
 
@@ -93,8 +93,8 @@ export default {
 }
 
 .hero-title {
-  margin: 0 0 16px;
-  font-size: 3rem;
+  margin: 0 0 20px;
+  font-size: 4rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
@@ -105,52 +105,52 @@ export default {
 
 .hero-subtitle {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: var(--muted);
   line-height: 1.6;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 /* Features Grid */
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
   width: 100%;
 }
 
 .feature {
-  padding: 28px 24px;
+  padding: 32px 28px;
   background: var(--surface-strong);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
+  border-radius: 24px;
   border: 1px solid var(--border-glass);
   text-align: center;
   transition: all 0.3s ease;
 }
 
 .feature:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   box-shadow: var(--shadow-glow);
 }
 
 .feature-icon {
-  font-size: 36px;
+  font-size: 48px;
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .feature h3 {
-  margin: 0 0 8px;
-  font-size: 1.1rem;
+  margin: 0 0 10px;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text);
 }
 
 .feature p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--muted);
   line-height: 1.5;
 }
@@ -158,15 +158,15 @@ export default {
 /* CTA Section */
 .cta-section {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .cta-btn {
-  padding: 16px 32px;
+  padding: 18px 40px;
   border-radius: 999px;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -176,12 +176,12 @@ export default {
 .cta-btn.primary {
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
   color: white;
-  box-shadow: 0 4px 20px var(--glow);
+  box-shadow: 0 4px 24px var(--glow);
 }
 
 .cta-btn.primary:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 8px 30px var(--glow);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 8px 36px var(--glow);
 }
 
 .cta-btn.secondary {
@@ -193,8 +193,8 @@ export default {
 }
 
 .cta-btn.secondary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
 }
 
 .cta-btn:active {
@@ -204,23 +204,38 @@ export default {
 /* Info Note */
 .info-note {
   margin: 0;
-  padding: 16px 24px;
+  padding: 18px 28px;
   background: var(--surface-glass);
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid var(--border-glass);
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--muted);
   text-align: center;
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 640px) {
+  .landing {
+    padding: 20px;
+    gap: 32px;
+  }
+
+  .hero-icon {
+    font-size: 64px;
+  }
+
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
   }
 
   .hero-subtitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .features-grid {
@@ -234,6 +249,7 @@ export default {
 
   .cta-btn {
     width: 100%;
+    padding: 16px 32px;
   }
 }
 </style>

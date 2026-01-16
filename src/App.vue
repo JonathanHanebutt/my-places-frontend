@@ -1,10 +1,19 @@
 <template>
   <div class="page">
-    <div class="shell" :class="{ 'shell-compact': currentView === 'swipe' }">
-      <header class="hdr">
-        <h1 @click="currentView = 'home'" class="logo-link">Berlin Places</h1>
+    <div class="shell" :class="{
+      'shell-compact': currentView === 'swipe',
+      'shell-landing': !auth.isAuthenticated && !isGuestMode
+    }">
+      <!-- Header nur anzeigen wenn eingeloggt oder im Gast-Modus -->
+      <header v-if="auth.isAuthenticated || isGuestMode" class="hdr">
+        <h1 @click="goHome" class="logo-link">Berlin Places</h1>
 
         <div class="hdr-actions">
+          <!-- Gast-Modus Hinweis -->
+          <span v-if="isGuestMode && !auth.isAuthenticated" class="guest-badge">
+            👀 Gast-Modus
+          </span>
+
           <!-- Eingeloggt -->
           <span v-if="auth.isAuthenticated" class="user-badge">
             Hi, {{ auth.username }}
@@ -14,9 +23,9 @@
             Logout
           </button>
 
-          <!-- Nicht eingeloggt -->
-          <button v-else class="btn" @click="isLoginOpen = true">
-            Login
+          <!-- Gast: Login Button -->
+          <button v-if="isGuestMode && !auth.isAuthenticated" class="btn primary-btn" @click="isLoginOpen = true">
+            Anmelden
           </button>
 
           <!-- Theme Toggle bleibt immer -->
@@ -269,6 +278,10 @@ export default {
       this.currentView = "home";
     },
 
+    goHome() {
+      this.currentView = "home";
+    },
+
     async onRate({ item, like }) {
       const backendBase = this.getBackendBase();
 
@@ -429,6 +442,12 @@ body {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Landing Page Shell - zentriert den Inhalt */
+.shell-landing {
+  justify-content: center;
+  padding: 3rem;
+}
+
 .shell::before {
   content: "";
   position: absolute;
@@ -493,6 +512,18 @@ body {
   transition: all 0.3s ease;
 }
 
+.guest-badge {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--muted);
+  background: var(--surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-glass);
+}
+
 /* ---------- Buttons (Glass style) ---------- */
 .btn {
   border: 1px solid var(--border-glass);
@@ -508,6 +539,17 @@ body {
   color: var(--text);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn.primary-btn {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 16px var(--glow);
+}
+
+.btn.primary-btn:hover {
+  box-shadow: 0 6px 24px var(--glow);
 }
 
 .btn:hover {
