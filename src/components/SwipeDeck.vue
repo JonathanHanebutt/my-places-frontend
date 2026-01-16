@@ -1,6 +1,7 @@
 <template>
   <div class="deck">
-    <div class="stack">
+    <!-- Card Stack -->
+    <div class="stack" v-if="stack.length">
       <SwipeCard
         v-for="(it, i) in stack"
         :key="it.name + '-' + i"
@@ -12,13 +13,24 @@
       />
     </div>
 
-    <!-- Fallback-Buttons -->
-    <div class="actions" v-if="stack.length">
-      <button class="btn nope" @click="fakeSwipe(false)">👎</button>
-      <button class="btn like" @click="fakeSwipe(true)">👍</button>
+    <!-- Action Bar -->
+    <div class="action-bar" v-if="stack.length">
+      <button class="action-btn nope" @click="fakeSwipe(false)">
+        <span class="action-icon">👎</span>
+        <span class="action-label">Nicht mein Ding</span>
+      </button>
+      <button class="action-btn like" @click="fakeSwipe(true)">
+        <span class="action-icon">👍</span>
+        <span class="action-label">Gefällt mir</span>
+      </button>
     </div>
 
-    <p v-else class="empty">Keine weiteren Einträge – danke fürs Bewerten! 🎉</p>
+    <!-- Empty State -->
+    <div v-else class="empty-state">
+      <span class="empty-icon">🎉</span>
+      <h3>Alle bewertet!</h3>
+      <p>Du hast alle Orte durchgeschaut. Schau dir deine Likes an!</p>
+    </div>
   </div>
 </template>
 
@@ -31,12 +43,11 @@ export default {
   props: {
     items: { type: Array, required: true }
   },
-  emits: ["rate", "view-place"], // { item, like }
+  emits: ["rate", "view-place"],
   data() {
     return { stack: [] };
   },
   created() {
-    // lokale Kopie, damit wir pop/push machen können
     this.stack = [...this.items];
   },
   watch: {
@@ -48,7 +59,6 @@ export default {
       this.$emit("rate", { item, like });
     },
     fakeSwipe(like) {
-      // Klick-Buttons: emitte wie ein Swipe (wir entfernen manuell die Top-Karte)
       const item = this.stack.pop();
       this.$emit("rate", { item, like });
     }
@@ -61,101 +71,136 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
   width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .stack {
   position: relative;
-  width: min(580px, 94vw);
-  height: 420px;
-  margin: 0 auto;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 500px;
 }
 
-.actions {
+/* Action Bar */
+.action-bar {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   justify-content: center;
+  width: 100%;
 }
 
-.btn {
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.6));
-  border-radius: 999px;
-  padding: 14px 22px;
-  font-size: 1.4rem;
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.06);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition, 0.25s ease);
 }
 
-.btn:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.12),
-    0 16px 40px rgba(0, 0, 0, 0.1);
+.action-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring, 0 0 0 3px rgba(22, 163, 74, 0.5));
 }
 
-.btn:active {
-  transform: translateY(0) scale(0.98);
+.action-btn:active {
+  transform: scale(0.96);
 }
 
-.btn.like {
-  background: rgba(22, 163, 74, 0.12);
-  color: #16a34a;
-  border-color: rgba(22, 163, 74, 0.25);
+.action-icon {
+  font-size: 1.3rem;
 }
 
-.btn.like:hover {
-  background: rgba(22, 163, 74, 0.22);
-  box-shadow:
-    0 8px 20px rgba(22, 163, 74, 0.2),
-    0 16px 40px rgba(22, 163, 74, 0.15);
+.action-label {
+  font-size: 0.95rem;
 }
 
-.btn.nope {
-  background: rgba(220, 38, 38, 0.1);
-  color: #dc2626;
-  border-color: rgba(220, 38, 38, 0.2);
+/* Like Button */
+.action-btn.like {
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--success, #16a34a);
+  border-color: rgba(22, 163, 74, 0.2);
 }
 
-.btn.nope:hover {
-  background: rgba(220, 38, 38, 0.18);
-  box-shadow:
-    0 8px 20px rgba(220, 38, 38, 0.2),
-    0 16px 40px rgba(220, 38, 38, 0.15);
+.action-btn.like:hover {
+  background: rgba(22, 163, 74, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.2);
 }
 
-.empty {
-  color: var(--muted, #475569);
-  font-weight: 500;
+/* Nope Button */
+.action-btn.nope {
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--error, #dc2626);
+  border-color: rgba(220, 38, 38, 0.15);
+}
+
+.action-btn.nope:hover {
+  background: rgba(220, 38, 38, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.15);
+}
+
+/* Empty State */
+.empty-state {
   text-align: center;
-  padding: 2rem;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.35));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 16px;
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.4));
+  padding: 48px 32px;
+  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
+  border-radius: var(--radius, 20px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
+}
+
+.empty-icon {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text, #1a1a1a);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-muted, #4b5563);
 }
 
 /* Dark mode adjustments */
-:root[data-theme="dark"] .btn.like {
-  background: rgba(74, 222, 128, 0.18);
-  border-color: rgba(74, 222, 128, 0.3);
+[data-theme="dark"] .action-btn.like {
+  background: rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.25);
   color: #4ade80;
 }
 
-:root[data-theme="dark"] .btn.nope {
-  background: rgba(248, 113, 113, 0.15);
-  border-color: rgba(248, 113, 113, 0.25);
+[data-theme="dark"] .action-btn.nope {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.2);
   color: #f87171;
 }
 
-:root[data-theme="dark"] .empty {
-  background: var(--surface-glass, rgba(30, 41, 59, 0.45));
-  border-color: var(--border-glass, rgba(148, 163, 184, 0.2));
+/* Responsive */
+@media (max-width: 640px) {
+  .action-bar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

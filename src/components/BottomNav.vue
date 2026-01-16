@@ -42,15 +42,12 @@ export default {
   display: flex;
   gap: 8px;
   padding: 10px 14px;
-  background: var(--surface-strong);
+  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border-radius: 999px;
-  border: 1px solid var(--border-glass);
-  box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.02),
-    0 12px 24px rgba(0, 0, 0, 0.08),
-    0 24px 48px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
+  box-shadow: var(--shadow-lg);
   z-index: 1000;
 }
 
@@ -63,22 +60,27 @@ export default {
   padding: 10px 20px;
   background: transparent;
   border: none;
-  border-radius: 20px;
+  border-radius: var(--radius, 20px);
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition, 0.25s ease);
 }
 
 .nav-item:hover {
-  background: var(--surface-glass);
+  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
 }
 
 .nav-item.active {
-  background: var(--surface-glass);
+  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
+}
+
+.nav-item:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring, 0 0 0 3px rgba(22, 163, 74, 0.5));
 }
 
 .nav-icon {
   font-size: 22px;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--transition, 0.25s ease);
 }
 
 .nav-item.active .nav-icon {
@@ -92,12 +94,12 @@ export default {
 .nav-label {
   font-size: 11px;
   font-weight: 600;
-  color: var(--muted);
-  transition: color 0.2s ease;
+  color: var(--text-muted, #4b5563);
+  transition: color var(--transition-fast, 0.15s ease);
 }
 
 .nav-item.active .nav-label {
-  color: var(--accent);
+  color: var(--primary, #16a34a);
 }
 
 .nav-indicator {
@@ -105,8 +107,8 @@ export default {
   bottom: 6px;
   width: 4px;
   height: 4px;
-  background: var(--accent);
-  border-radius: 999px;
+  background: var(--primary, #16a34a);
+  border-radius: var(--radius-full, 9999px);
   animation: scaleIn 0.2s ease;
 }
 

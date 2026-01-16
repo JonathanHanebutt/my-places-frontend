@@ -76,6 +76,8 @@ export default {
 <style scoped>
 .home {
   width: 100%;
+  max-width: var(--container-max, 1400px);
+  margin: 0 auto;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -92,11 +94,11 @@ export default {
 .hero {
   text-align: center;
   padding: 48px 32px;
-  background: var(--surface-glass);
+  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: 24px;
-  border: 1px solid var(--border-glass);
+  border-radius: var(--radius, 20px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
 }
 
 .hero-icon {
@@ -115,7 +117,7 @@ export default {
   font-size: 2.5rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+  background: linear-gradient(135deg, var(--primary, #16a34a) 0%, var(--primary-soft, #22c55e) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -123,7 +125,7 @@ export default {
 
 .hero-subtitle {
   margin: 0 auto;
-  color: var(--muted);
+  color: var(--text-muted, #4b5563);
   font-size: 1.1rem;
   line-height: 1.6;
   max-width: 400px;
@@ -132,20 +134,25 @@ export default {
 .create-btn {
   margin-top: 20px;
   padding: 14px 28px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--primary, #16a34a) 0%, var(--primary-soft, #22c55e) 100%);
+  color: var(--primary-contrast, #ffffff);
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-full, 9999px);
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 20px var(--glow);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px var(--primary-glow, rgba(22, 163, 74, 0.25));
+  transition: all var(--transition, 0.25s ease);
 }
 
 .create-btn:hover {
   transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 8px 28px var(--glow);
+  box-shadow: 0 8px 28px var(--primary-glow);
+}
+
+.create-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .create-btn:active {
@@ -155,13 +162,13 @@ export default {
 .login-hint {
   margin: 16px 0 0;
   font-size: 0.9rem;
-  color: var(--muted);
+  color: var(--text-muted, #4b5563);
 }
 
 .link-btn {
   background: none;
   border: none;
-  color: var(--accent);
+  color: var(--primary, #16a34a);
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
@@ -179,15 +186,15 @@ export default {
 .feature-card {
   position: relative;
   padding: 36px 28px;
-  background: var(--surface-strong);
+  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
-  border-radius: 24px;
-  border: 1px solid var(--border-glass);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius, 20px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
+  box-shadow: var(--shadow);
   cursor: pointer;
   text-align: left;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition, 0.25s ease);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -198,13 +205,13 @@ export default {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 24px;
+  border-radius: var(--radius, 20px);
   padding: 1.5px;
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.5) 0%,
     rgba(255, 255, 255, 0.1) 50%,
-    var(--accent-soft) 100%
+    var(--primary-soft, #22c55e) 100%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -221,7 +228,13 @@ export default {
 
 .feature-card:hover {
   transform: translateY(-6px) scale(1.02);
-  box-shadow: var(--shadow-glow), 0 16px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-glow), var(--shadow-lg);
+  border-color: var(--primary, #16a34a);
+}
+
+.feature-card:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-glow);
 }
 
 .feature-card:active {
@@ -237,13 +250,13 @@ export default {
   margin: 0 0 10px;
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text, #1a1a1a);
 }
 
 .feature-card p {
   margin: 0;
   font-size: 0.95rem;
-  color: var(--muted);
+  color: var(--text-muted, #4b5563);
   line-height: 1.5;
   flex: 1;
 }
@@ -252,12 +265,12 @@ export default {
   display: inline-block;
   margin-top: 16px;
   padding: 8px 14px;
-  background: var(--accent-light, rgba(225, 29, 72, 0.1));
-  border-radius: 999px;
+  background: rgba(22, 163, 74, 0.1);
+  border-radius: var(--radius-full, 9999px);
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--accent);
-  border: 1px solid var(--border-glass);
+  color: var(--primary, #16a34a);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
 }
 
 /* Quick Stats */
@@ -267,11 +280,11 @@ export default {
   justify-content: center;
   gap: 32px;
   padding: 24px 36px;
-  background: var(--surface-glass);
+  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
-  border: 1px solid var(--border-glass);
+  border-radius: var(--radius, 20px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
 }
 
 .stat {

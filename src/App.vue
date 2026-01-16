@@ -28,14 +28,8 @@
             Anmelden
           </button>
 
-          <!-- Theme Toggle bleibt immer -->
-          <button
-              class="theme-toggle"
-              @click="toggleTheme"
-              :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
-          >
-            🌓
-          </button>
+          <!-- Theme Toggle -->
+          <ThemeToggle />
         </div>
       </header>
 
@@ -80,6 +74,7 @@
         v-else-if="!auth.isAuthenticated && !isGuestMode"
         @login="isLoginOpen = true"
         @browse="enterGuestMode"
+        @navigate="navigateFromLanding"
       />
 
       <!-- Views (für angemeldete Nutzer oder Gast-Modus) -->
@@ -138,6 +133,7 @@ import BottomNav from "./components/BottomNav.vue";
 import CreatePlaceModal from "./components/CreatePlaceModal.vue";
 import PlaceDetailModal from "./components/PlaceDetailModal.vue";
 import LandingPage from "./components/LandingPage.vue";
+import ThemeToggle from "./components/ThemeToggle.vue";
 
 export default {
   name: "App",
@@ -149,7 +145,8 @@ export default {
     BottomNav,
     CreatePlaceModal,
     PlaceDetailModal,
-    LandingPage
+    LandingPage,
+    ThemeToggle
   },
 
   data() {
@@ -161,7 +158,6 @@ export default {
 
     return {
       /* ---------- UI ---------- */
-      theme: "light",
       isLoginOpen: false,
       isCreatePlaceOpen: false,
       isPlaceDetailOpen: false,
@@ -195,15 +191,6 @@ export default {
   },
 
   mounted() {
-    // Theme initialisieren
-    const saved = localStorage.getItem("theme");
-    if (
-        saved === "dark" ||
-        (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      this.theme = "dark";
-    }
-    document.documentElement.setAttribute("data-theme", this.theme);
 
     // Places laden (lokal via .env.local oder Prod via Render)
     this.loadPlaces();
@@ -236,11 +223,6 @@ export default {
       }
     },
 
-    toggleTheme() {
-      this.theme = this.theme === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", this.theme);
-      localStorage.setItem("theme", this.theme);
-    },
 
     onLoggedIn({ username, token }) {
       this.auth.username = username;
@@ -276,6 +258,11 @@ export default {
     enterGuestMode() {
       this.isGuestMode = true;
       this.currentView = "home";
+    },
+
+    navigateFromLanding(view) {
+      this.isGuestMode = true;
+      this.currentView = view;
     },
 
     goHome() {
@@ -340,102 +327,33 @@ export default {
 </script>
 
 <style>
-/* ---------- Theme Variables (Liquid Glass with Green Accent) ---------- */
-:root {
-  --bg1: #f0fdf4;
-  --bg2: #bbf7d0;
-  --bg3: #4ade80;
-  --surface: rgba(255, 255, 255, 0.55);
-  --surface-strong: rgba(255, 255, 255, 0.8);
-  --surface-glass: rgba(255, 255, 255, 0.35);
-  --text: #1e293b;
-  --muted: #64748b;
-  --accent: #16a34a;
-  --accent-soft: #4ade80;
-  --accent-light: #dcfce7;
-  --glow: rgba(22, 163, 74, 0.2);
-  --border-glass: rgba(255, 255, 255, 0.6);
-  --shadow:
-    0 4px 6px rgba(0, 0, 0, 0.02),
-    0 12px 24px rgba(0, 0, 0, 0.06),
-    0 24px 48px rgba(0, 0, 0, 0.08);
-  --shadow-glow: 0 8px 32px rgba(22, 163, 74, 0.15);
-  --radius: 28px;
-  --radius-sm: 16px;
-}
+/* ============================================
+   APP STYLES - Using Global Theme Variables
+   ============================================ */
 
-:root[data-theme="dark"] {
-  --bg1: #052e16;
-  --bg2: #14532d;
-  --bg3: #166534;
-  --surface: rgba(20, 40, 30, 0.7);
-  --surface-strong: rgba(30, 60, 45, 0.8);
-  --surface-glass: rgba(25, 50, 38, 0.5);
-  --text: #f0fdf4;
-  --muted: #86efac;
-  --accent: #4ade80;
-  --accent-soft: #86efac;
-  --accent-light: rgba(74, 222, 128, 0.15);
-  --glow: rgba(74, 222, 128, 0.3);
-  --border-glass: rgba(134, 239, 172, 0.15);
-  --shadow:
-    0 4px 6px rgba(0, 0, 0, 0.15),
-    0 12px 24px rgba(0, 0, 0, 0.25),
-    0 24px 48px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 8px 32px rgba(74, 222, 128, 0.25);
-}
-
-/* ---------- Global Layout ---------- */
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#app {
-  height: 100%;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  background:
-    radial-gradient(ellipse at 10% 10%, var(--bg3) 0%, transparent 40%),
-    radial-gradient(ellipse at 90% 90%, var(--bg2) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, var(--bg2) 0%, transparent 60%),
-    linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg1) 100%);
-  background-attachment: fixed;
-  display: flex;
-  justify-content: center;
-  min-height: 100svh;
-  transition: background 0.5s ease;
-  overflow-x: hidden;
-}
-
+/* ---------- Page Layout ---------- */
 .page {
   width: 100%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 1rem;
-  padding-bottom: 100px; /* Space for bottom nav */
+  padding: var(--container-padding, 24px);
+  padding-bottom: 100px;
 }
 
 .shell {
   position: relative;
   width: 100%;
-  max-width: 1920px;
-  min-height: calc(100vh - 120px);
-  background: var(--surface);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border-radius: var(--radius);
-  border: 1px solid var(--border-glass);
+  max-width: var(--container-max, 1400px);
+  min-height: calc(100vh - 140px);
+  background: var(--surface, rgba(255, 255, 255, 0.7));
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border-radius: var(--radius-lg, 28px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
   box-shadow: var(--shadow);
-  padding: 2rem 3rem 2.5rem;
+  padding: 24px 32px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -445,20 +363,29 @@ body {
 /* Landing Page Shell - zentriert den Inhalt */
 .shell-landing {
   justify-content: center;
-  padding: 3rem;
+  padding: var(--container-padding);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.shell-landing::before {
+  display: none;
 }
 
 .shell::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.3) 0%,
     rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.05) 100%
+    rgba(22, 163, 74, 0.1) 100%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -472,27 +399,25 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-glass);
+  border-bottom: 1px solid var(--border);
 }
 
 .hdr h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 2px 20px var(--glow);
 }
 
 .hdr-actions {
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -515,20 +440,20 @@ body {
 .guest-badge {
   font-weight: 600;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text-muted);
   background: var(--surface-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 10px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
 }
 
-/* ---------- Buttons (Glass style) ---------- */
+/* ---------- Buttons ---------- */
 .btn {
-  border: 1px solid var(--border-glass);
+  border: 1px solid var(--border);
   cursor: pointer;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   height: 42px;
   padding: 0 18px;
   font-size: 14px;
@@ -537,63 +462,39 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   color: var(--text);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
+  transition: all var(--transition);
 }
 
 .btn.primary-btn {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
+  color: var(--primary-contrast);
   border: none;
-  box-shadow: 0 4px 16px var(--glow);
+  box-shadow: 0 4px 16px var(--primary-glow);
 }
 
 .btn.primary-btn:hover {
-  box-shadow: 0 6px 24px var(--glow);
+  box-shadow: 0 6px 24px var(--primary-glow);
 }
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  background: var(--surface-glass);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .btn:active {
   transform: translateY(0) scale(0.98);
 }
 
-/* ---------- Theme Toggle ---------- */
-.theme-toggle {
-  border: 1px solid var(--border-glass);
-  cursor: pointer;
-  border-radius: 999px;
-  width: 42px;
-  height: 42px;
-  font-size: 18px;
-  background: var(--surface-strong);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: var(--text);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.theme-toggle:hover {
-  transform: translateY(-2px) rotate(15deg);
-  box-shadow: var(--shadow-glow);
-}
-
-.theme-toggle:active {
-  transform: translateY(0) scale(0.95);
-}
-
 /* ---------- Footer ---------- */
 .stats {
   margin-top: 1.5rem;
-  color: var(--muted);
+  color: var(--text-muted);
   font-weight: 600;
   font-size: 14px;
   text-align: center;
@@ -602,24 +503,23 @@ body {
   -webkit-backdrop-filter: blur(20px);
   padding: 0.75rem 1.25rem;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-glass);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+  border: 1px solid var(--border);
+  transition: all var(--transition);
 }
 
 .error {
-  color: #ef4444;
+  color: var(--error, #ef4444);
   font-weight: 600;
   text-align: center;
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(220, 38, 38, 0.1);
   padding: 1rem 1.5rem;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 /* Loading state */
 p {
-  color: var(--muted);
+  color: var(--text-muted);
   font-weight: 500;
 }
 

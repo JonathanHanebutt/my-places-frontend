@@ -113,75 +113,70 @@ export default {
 <style scoped>
 .swipe-card {
   position: absolute;
-  top: 0; left: 0; right: 0; margin: 0 auto;
-  width: min(580px, 94vw);
-  background: var(--surface-strong, rgba(255, 255, 255, 0.75));
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border-radius: 24px;
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.6));
-  box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.02),
-    0 12px 24px rgba(0, 0, 0, 0.06),
-    0 24px 48px rgba(0, 0, 0, 0.08);
+  inset: 0;
+  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border-radius: var(--radius, 20px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
+  box-shadow: var(--shadow);
   overflow: hidden;
   user-select: none;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero {
   width: 100%;
-  height: 260px;
+  height: 55%;
   object-fit: cover;
-  border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.3));
+  border-bottom: 1px solid var(--border, rgba(22, 163, 74, 0.1));
 }
 
 .content {
-  padding: 18px 20px 22px;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--surface-glass, rgba(255, 255, 255, 0.1)) 100%
-  );
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 h3 {
-  margin: 0 0 8px;
-  font-size: 1.35rem;
+  margin: 0;
+  font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  background: linear-gradient(135deg, var(--accent, #6366f1) 0%, var(--accent-soft, #818cf8) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text, #1a1a1a);
 }
 
 .desc {
-  color: var(--muted, #475569);
-  margin-bottom: 10px;
+  color: var(--text-muted, #4b5563);
+  margin: 0;
   line-height: 1.5;
   font-size: 0.95rem;
+  flex: 1;
 }
 
 .meta {
-  color: var(--text, #1e293b);
+  color: var(--text, #1a1a1a);
   font-weight: 600;
   font-size: 0.9rem;
   display: flex;
   gap: 12px;
   padding: 10px 14px;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.35));
-  border-radius: 12px;
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.4));
+  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
+  border-radius: var(--radius-sm, 12px);
+  border: 1px solid var(--border, rgba(22, 163, 74, 0.1));
   width: fit-content;
 }
 
 .badge {
   position: absolute;
   top: 16px;
-  padding: 8px 14px;
-  border-radius: 12px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm, 12px);
   font-weight: 800;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   letter-spacing: .08em;
   opacity: 0;
   pointer-events: none;
@@ -212,7 +207,7 @@ h3 {
   right: 60px;
   width: 40px;
   height: 40px;
-  border-radius: 999px;
+  border-radius: var(--radius-full, 9999px);
   border: none;
   background: var(--surface-strong, rgba(255, 255, 255, 0.9));
   backdrop-filter: blur(20px);
@@ -222,28 +217,36 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow);
+  transition: all var(--transition, 0.25s ease);
   z-index: 10;
 }
 
 .info-btn:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-glow);
 }
 
-/* Dark mode adjustments */
-:root[data-theme="dark"] .swipe-card {
-  background: var(--surface-strong, rgba(51, 65, 85, 0.7));
-  border-color: var(--border-glass, rgba(148, 163, 184, 0.2));
+.info-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
-:root[data-theme="dark"] .hero {
-  border-color: var(--border-glass, rgba(148, 163, 184, 0.15));
+/* Dark mode */
+[data-theme="dark"] .swipe-card {
+  background: var(--surface-strong, rgba(30, 45, 38, 0.9));
+  border-color: var(--border, rgba(74, 222, 128, 0.15));
 }
 
-:root[data-theme="dark"] .meta {
-  background: var(--surface-glass, rgba(30, 41, 59, 0.45));
-  border-color: var(--border-glass, rgba(148, 163, 184, 0.15));
+[data-theme="dark"] .badge.like {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.4);
+}
+
+[data-theme="dark"] .badge.nope {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.35);
 }
 </style>

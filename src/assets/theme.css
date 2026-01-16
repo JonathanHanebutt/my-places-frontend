@@ -1,0 +1,351 @@
+/* ============================================
+   BERLIN PLACES - GLOBAL THEME VARIABLES
+   ============================================ */
+
+:root {
+  /* Brand Colors - Green */
+  --primary: #16a34a;
+  --primary-soft: #22c55e;
+  --primary-light: #4ade80;
+  --primary-dark: #15803d;
+  --primary-contrast: #ffffff;
+  --primary-glow: rgba(22, 163, 74, 0.25);
+
+  /* Light Theme - Surfaces */
+  --bg: #f0fdf4;
+  --bg-gradient-1: #f0fdf4;
+  --bg-gradient-2: #dcfce7;
+  --bg-gradient-3: #bbf7d0;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-strong: rgba(255, 255, 255, 0.9);
+  --surface-glass: rgba(255, 255, 255, 0.5);
+  --surface-elevated: #ffffff;
+
+  /* Light Theme - Text */
+  --text: #1a1a1a;
+  --text-muted: #4b5563;
+  --text-subtle: #6b7280;
+
+  /* Light Theme - Borders & Shadows */
+  --border: rgba(22, 163, 74, 0.15);
+  --border-strong: rgba(22, 163, 74, 0.25);
+  --border-glass: rgba(255, 255, 255, 0.6);
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.04),
+            0 10px 20px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08),
+               0 20px 40px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 8px 32px rgba(22, 163, 74, 0.2);
+
+  /* Semantic Colors */
+  --success: #16a34a;
+  --error: #dc2626;
+  --warning: #f59e0b;
+
+  /* Layout */
+  --radius-sm: 12px;
+  --radius: 20px;
+  --radius-lg: 28px;
+  --radius-full: 9999px;
+  --container-max: 1400px;
+  --container-padding: 24px;
+
+  /* Focus */
+  --focus: rgba(22, 163, 74, 0.5);
+  --focus-ring: 0 0 0 3px var(--focus);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   DARK THEME
+   ============================================ */
+[data-theme="dark"] {
+  /* Dark Theme - Surfaces */
+  --bg: #0a0f0d;
+  --bg-gradient-1: #0a0f0d;
+  --bg-gradient-2: #0f1a14;
+  --bg-gradient-3: #14291e;
+  --surface: rgba(20, 30, 25, 0.8);
+  --surface-strong: rgba(30, 45, 38, 0.9);
+  --surface-glass: rgba(20, 35, 28, 0.6);
+  --surface-elevated: #1a2b22;
+
+  /* Dark Theme - Text */
+  --text: #f0fdf4;
+  --text-muted: #a7f3d0;
+  --text-subtle: #6ee7b7;
+
+  /* Dark Theme - Borders & Shadows */
+  --border: rgba(74, 222, 128, 0.15);
+  --border-strong: rgba(74, 222, 128, 0.25);
+  --border-glass: rgba(74, 222, 128, 0.1);
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.2),
+            0 10px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3),
+               0 20px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 8px 32px rgba(74, 222, 128, 0.15);
+
+  /* Dark Theme - Primary adjustments */
+  --primary: #4ade80;
+  --primary-soft: #86efac;
+  --primary-glow: rgba(74, 222, 128, 0.3);
+
+  /* Focus */
+  --focus: rgba(74, 222, 128, 0.5);
+}
+
+/* ============================================
+   GLOBAL RESET & BASE
+   ============================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--transition-slow), color var(--transition);
+}
+
+/* Background Gradient */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, var(--bg-gradient-3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, var(--bg-gradient-2) 0%, transparent 50%),
+    linear-gradient(160deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, var(--bg-gradient-1) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ============================================
+   LAYOUT CONTAINER
+   ============================================ */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 var(--container-padding);
+}
+
+/* ============================================
+   CARD STYLES
+   ============================================ */
+.card {
+  background: var(--surface-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow);
+}
+
+.card-interactive:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--shadow-glow);
+}
+
+.card-interactive:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ============================================
+   BUTTON STYLES
+   ============================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
+  color: var(--primary-contrast);
+  border: none;
+  box-shadow: 0 4px 16px var(--primary-glow);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 8px 24px var(--primary-glow);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: none;
+}
+
+.btn-ghost:hover {
+  background: var(--surface-glass);
+}
+
+/* ============================================
+   INPUT STYLES
+   ============================================ */
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--surface-glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+}
+
+.input::placeholder {
+  color: var(--text-subtle);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+  background: var(--surface-strong);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-primary {
+  color: var(--primary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.gap-sm {
+  gap: 8px;
+}
+
+.gap-md {
+  gap: 16px;
+}
+
+.gap-lg {
+  gap: 24px;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  :root {
+    --container-padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --container-padding: 12px;
+    --radius: 16px;
+    --radius-lg: 20px;
+  }
+}
+
