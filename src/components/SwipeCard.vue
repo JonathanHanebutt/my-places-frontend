@@ -200,10 +200,10 @@ h3 {
 
 .badge.nope {
   right: 16px;
-  color: var(--accent, #e11d48);
-  background: rgba(225, 29, 72, 0.12);
-  border: 2px solid rgba(225, 29, 72, 0.35);
-  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.2);
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.12);
+  border: 2px solid rgba(220, 38, 38, 0.35);
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2);
 }
 
 .info-btn {

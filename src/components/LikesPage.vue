@@ -288,9 +288,9 @@ export default {
 }
 
 .remove-btn:hover {
-  background: rgba(225, 29, 72, 0.15);
-  border-color: rgba(225, 29, 72, 0.3);
-  color: var(--accent);
+  background: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #dc2626;
 }
 
 /* Responsive */

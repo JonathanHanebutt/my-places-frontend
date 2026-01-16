@@ -66,7 +66,14 @@
         Fehler beim Laden: {{ error }}
       </p>
 
-      <!-- Views -->
+      <!-- Landing Page für nicht angemeldete Nutzer (und nicht im Gast-Modus) -->
+      <LandingPage
+        v-else-if="!auth.isAuthenticated && !isGuestMode"
+        @login="isLoginOpen = true"
+        @browse="enterGuestMode"
+      />
+
+      <!-- Views (für angemeldete Nutzer oder Gast-Modus) -->
       <template v-else>
         <!-- Home Page -->
         <HomePage
@@ -104,9 +111,9 @@
       </template>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation (nur für angemeldete Nutzer oder Gast-Modus) -->
     <BottomNav
-      v-if="!loading && !error"
+      v-if="!loading && !error && (auth.isAuthenticated || isGuestMode)"
       :currentView="currentView"
       @navigate="currentView = $event"
     />
@@ -121,6 +128,7 @@ import LikesPage from "./components/LikesPage.vue";
 import BottomNav from "./components/BottomNav.vue";
 import CreatePlaceModal from "./components/CreatePlaceModal.vue";
 import PlaceDetailModal from "./components/PlaceDetailModal.vue";
+import LandingPage from "./components/LandingPage.vue";
 
 export default {
   name: "App",
@@ -131,13 +139,16 @@ export default {
     LikesPage,
     BottomNav,
     CreatePlaceModal,
-    PlaceDetailModal
+    PlaceDetailModal,
+    LandingPage
   },
 
   data() {
     const token = localStorage.getItem("auth_token");
     const username = localStorage.getItem("auth_username");
-    const savedLikes = JSON.parse(localStorage.getItem("liked_places") || "[]");
+    // Nur Likes laden wenn eingeloggt
+    const savedLikes = token ? JSON.parse(localStorage.getItem("liked_places") || "[]") : [];
+    const savedSwipedIds = token ? JSON.parse(localStorage.getItem("swiped_ids") || "[]") : [];
 
     return {
       /* ---------- UI ---------- */
@@ -147,6 +158,7 @@ export default {
       isPlaceDetailOpen: false,
       selectedPlace: {},
       currentView: "home", // "home" | "swipe" | "likes"
+      isGuestMode: false, // Gast-Modus (browsen ohne Login)
 
       /* ---------- AUTH ---------- */
       auth: {
@@ -158,7 +170,7 @@ export default {
       /* ---------- DATA ---------- */
       places: [],
       likedPlaces: savedLikes,
-      swipedIds: new Set(JSON.parse(localStorage.getItem("swiped_ids") || "[]")),
+      swipedIds: new Set(savedSwipedIds),
       totalLikes: 0,
       totalDislikes: 0,
       loading: true,
@@ -237,8 +249,24 @@ export default {
       this.auth.token = null;
       this.auth.isAuthenticated = false;
 
+      // Auth-Daten entfernen
       localStorage.removeItem("auth_username");
       localStorage.removeItem("auth_token");
+
+      // Likes und Swipes zurücksetzen
+      this.likedPlaces = [];
+      this.swipedIds = new Set();
+      localStorage.removeItem("liked_places");
+      localStorage.removeItem("swiped_ids");
+
+      // Zurück zur Landing Page
+      this.isGuestMode = false;
+      this.currentView = "home";
+    },
+
+    enterGuestMode() {
+      this.isGuestMode = true;
+      this.currentView = "home";
     },
 
     async onRate({ item, like }) {
@@ -299,49 +327,49 @@ export default {
 </script>
 
 <style>
-/* ---------- Theme Variables (Liquid Glass with Red Accent) ---------- */
+/* ---------- Theme Variables (Liquid Glass with Green Accent) ---------- */
 :root {
-  --bg1: #fef2f2;
-  --bg2: #fecaca;
-  --bg3: #f87171;
+  --bg1: #f0fdf4;
+  --bg2: #bbf7d0;
+  --bg3: #4ade80;
   --surface: rgba(255, 255, 255, 0.55);
   --surface-strong: rgba(255, 255, 255, 0.8);
   --surface-glass: rgba(255, 255, 255, 0.35);
   --text: #1e293b;
   --muted: #64748b;
-  --accent: #e11d48;
-  --accent-soft: #fb7185;
-  --accent-light: #ffe4e6;
-  --glow: rgba(225, 29, 72, 0.2);
+  --accent: #16a34a;
+  --accent-soft: #4ade80;
+  --accent-light: #dcfce7;
+  --glow: rgba(22, 163, 74, 0.2);
   --border-glass: rgba(255, 255, 255, 0.6);
   --shadow:
     0 4px 6px rgba(0, 0, 0, 0.02),
     0 12px 24px rgba(0, 0, 0, 0.06),
     0 24px 48px rgba(0, 0, 0, 0.08);
-  --shadow-glow: 0 8px 32px rgba(225, 29, 72, 0.15);
+  --shadow-glow: 0 8px 32px rgba(22, 163, 74, 0.15);
   --radius: 28px;
   --radius-sm: 16px;
 }
 
 :root[data-theme="dark"] {
-  --bg1: #1a0a0e;
-  --bg2: #2d1219;
-  --bg3: #4c1d2a;
-  --surface: rgba(30, 20, 24, 0.7);
-  --surface-strong: rgba(50, 30, 38, 0.8);
-  --surface-glass: rgba(40, 25, 32, 0.5);
-  --text: #fef2f2;
-  --muted: #fda4af;
-  --accent: #fb7185;
-  --accent-soft: #fda4af;
-  --accent-light: rgba(251, 113, 133, 0.15);
-  --glow: rgba(251, 113, 133, 0.3);
-  --border-glass: rgba(253, 164, 175, 0.15);
+  --bg1: #052e16;
+  --bg2: #14532d;
+  --bg3: #166534;
+  --surface: rgba(20, 40, 30, 0.7);
+  --surface-strong: rgba(30, 60, 45, 0.8);
+  --surface-glass: rgba(25, 50, 38, 0.5);
+  --text: #f0fdf4;
+  --muted: #86efac;
+  --accent: #4ade80;
+  --accent-soft: #86efac;
+  --accent-light: rgba(74, 222, 128, 0.15);
+  --glow: rgba(74, 222, 128, 0.3);
+  --border-glass: rgba(134, 239, 172, 0.15);
   --shadow:
     0 4px 6px rgba(0, 0, 0, 0.15),
     0 12px 24px rgba(0, 0, 0, 0.25),
     0 24px 48px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 8px 32px rgba(251, 113, 133, 0.25);
+  --shadow-glow: 0 8px 32px rgba(74, 222, 128, 0.25);
 }
 
 /* ---------- Global Layout ---------- */
@@ -379,22 +407,22 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 1.5rem;
-  padding-bottom: 120px; /* Space for bottom nav */
+  padding: 1rem;
+  padding-bottom: 100px; /* Space for bottom nav */
 }
 
 .shell {
   position: relative;
   width: 100%;
-  max-width: 1200px;
-  min-height: calc(100vh - 140px);
+  max-width: 1920px;
+  min-height: calc(100vh - 120px);
   background: var(--surface);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
   border-radius: var(--radius);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow);
-  padding: 2rem 2.5rem 2.5rem;
+  padding: 2rem 3rem 2.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;

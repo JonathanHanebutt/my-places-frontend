@@ -117,16 +117,16 @@ export default {
 }
 
 .btn.nope {
-  background: rgba(225, 29, 72, 0.1);
-  color: var(--accent, #e11d48);
-  border-color: rgba(225, 29, 72, 0.2);
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.2);
 }
 
 .btn.nope:hover {
-  background: rgba(225, 29, 72, 0.18);
+  background: rgba(220, 38, 38, 0.18);
   box-shadow:
-    0 8px 20px rgba(225, 29, 72, 0.2),
-    0 16px 40px rgba(225, 29, 72, 0.15);
+    0 8px 20px rgba(220, 38, 38, 0.2),
+    0 16px 40px rgba(220, 38, 38, 0.15);
 }
 
 .empty {
@@ -143,14 +143,15 @@ export default {
 
 /* Dark mode adjustments */
 :root[data-theme="dark"] .btn.like {
-  background: rgba(22, 163, 74, 0.18);
-  border-color: rgba(22, 163, 74, 0.3);
+  background: rgba(74, 222, 128, 0.18);
+  border-color: rgba(74, 222, 128, 0.3);
+  color: #4ade80;
 }
 
 :root[data-theme="dark"] .btn.nope {
-  background: rgba(251, 113, 133, 0.15);
-  border-color: rgba(251, 113, 133, 0.25);
-  color: var(--accent-soft, #fb7185);
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.25);
+  color: #f87171;
 }
 
 :root[data-theme="dark"] .empty {
