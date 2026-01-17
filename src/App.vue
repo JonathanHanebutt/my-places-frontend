@@ -360,7 +360,7 @@ export default {
   padding-top: 20px;
 }
 
-/* ---------- Floating Header ---------- */
+/* ---------- Floating Header - Liquid Glass ---------- */
 .hdr {
   width: 100%;
   max-width: 800px;
@@ -370,9 +370,23 @@ export default {
   gap: 12px;
   margin-bottom: 24px;
   padding: 12px 20px;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-full);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.hdr::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .hdr h1 {

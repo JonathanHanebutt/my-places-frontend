@@ -12,12 +12,36 @@
   --primary-contrast: #ffffff;
   --primary-glow: rgba(52, 199, 89, 0.3);
 
-  /* Light Theme */
+  /* Light Theme - Subtle Green Gradient Background */
   --bg: #F2F2F7;
+  --bg-gradient: linear-gradient(145deg,
+  #0081ff 0%,
+  #54b8ff 25%,
+  #87e9ff 50%,
+  #a6ffd9 75%,
+  #baf8d0 100%
+  );
   --bg-secondary: #FFFFFF;
   --surface: #FFFFFF;
   --surface-secondary: #F2F2F7;
   --surface-elevated: #FFFFFF;
+
+  /* Liquid Glass - Light Mode */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-border-subtle: rgba(255, 255, 255, 0.5);
+  --glass-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+  --glass-blur: blur(24px) saturate(180%);
+  --glass-shine: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.2) 40%,
+    transparent 60%
+  );
 
   /* Text - High Contrast */
   --text: #000000;
@@ -66,10 +90,33 @@
    ============================================ */
 [data-theme="dark"] {
   --bg: #000000;
+  --bg-gradient: linear-gradient(145deg,
+    #0A1F0F 0%,
+    #0D0D0D 30%,
+    #071510 60%,
+  #13251a 100%
+  );
   --bg-secondary: #1C1C1E;
   --surface: #1C1C1E;
   --surface-secondary: #2C2C2E;
   --surface-elevated: #2C2C2E;
+
+  /* Liquid Glass - Dark Mode */
+  --glass-bg: rgba(30, 30, 32, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-subtle: rgba(255, 255, 255, 0.08);
+  --glass-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+  --glass-blur: blur(24px) saturate(150%);
+  --glass-shine: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    transparent 60%
+  );
 
   /* Text - High Contrast for Dark */
   --text: #FFFFFF;
@@ -112,7 +159,8 @@ html {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
-  background: var(--bg);
+  background: var(--bg-gradient, var(--bg));
+  background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
   transition: background var(--transition-slow), color var(--transition);
@@ -142,20 +190,46 @@ body {
 }
 
 /* ============================================
-   FLOATING ELEMENTS
+   FLOATING ELEMENTS - Liquid Glass
    ============================================ */
 .floating-card {
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-float);
-  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .floating-pill {
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-full);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 /* ============================================

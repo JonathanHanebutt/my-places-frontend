@@ -114,9 +114,12 @@ export default {
 .swipe-card {
   position: absolute;
   inset: 0;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-float);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
   overflow: hidden;
   user-select: none;
   display: flex;

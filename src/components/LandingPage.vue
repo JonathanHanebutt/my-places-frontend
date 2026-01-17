@@ -99,15 +99,29 @@ export default {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Floating Header */
+/* Floating Header - Liquid Glass */
 .floating-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-full);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .logo {
@@ -164,15 +178,26 @@ export default {
   align-items: center;
   gap: 14px;
   padding: 20px;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
-  border: none;
-  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
   cursor: pointer;
   text-align: left;
   transition: all var(--transition);
   position: relative;
   overflow: hidden;
+}
+
+.feature-widget::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .feature-widget.large {
@@ -182,6 +207,13 @@ export default {
 
 .feature-widget.accent {
   background: var(--primary);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-color: transparent;
+}
+
+.feature-widget.accent::before {
+  display: none;
 }
 
 .feature-widget.accent .widget-content h3,

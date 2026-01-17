@@ -87,15 +87,29 @@ export default {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Welcome Card */
+/* Welcome Card - Liquid Glass */
 .welcome-card {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .welcome-icon {
@@ -143,7 +157,7 @@ export default {
   transform: scale(0.96);
 }
 
-/* Stats Grid */
+/* Stats Grid - Liquid Glass */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -156,9 +170,23 @@ export default {
   align-items: center;
   gap: 6px;
   padding: 20px 16px;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .stat-value {
@@ -193,10 +221,23 @@ export default {
 }
 
 .action-list {
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.action-list::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .action-item {

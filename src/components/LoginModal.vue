@@ -246,12 +246,24 @@ export default {
 .modal {
   width: 100%;
   max-width: 420px;
-  background: var(--surface, #FFFFFF);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--radius-lg, 20px);
-  border: 1px solid var(--border, rgba(60, 60, 67, 0.12));
-  box-shadow: var(--shadow-float);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
   overflow: hidden;
   animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.modal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .head {

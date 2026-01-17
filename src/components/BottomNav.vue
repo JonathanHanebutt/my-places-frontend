@@ -42,8 +42,10 @@ export default {
   justify-content: center;
   gap: 8px;
   padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
-  background: var(--surface);
-  border-top: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--glass-border-subtle);
   z-index: 1000;
 }
 

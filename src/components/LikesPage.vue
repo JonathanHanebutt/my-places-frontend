@@ -101,18 +101,32 @@ export default {
   font-size: 15px;
 }
 
-/* Empty State */
+/* Empty State - Liquid Glass */
 .empty-state {
   text-align: center;
   padding: 60px 32px;
-  background: var(--surface, #FFFFFF);
-  border-radius: var(--radius-lg, 20px);
-  box-shadow: var(--shadow);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-state::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .empty-icon {
@@ -161,15 +175,19 @@ export default {
   gap: 12px;
 }
 
-/* Like Card */
+/* Like Card - Liquid Glass */
 .like-card {
   position: relative;
   display: flex;
   gap: 14px;
   align-items: center;
   padding: 12px;
-  background: var(--surface, #FFFFFF);
-  border-radius: var(--radius-lg, 20px);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
   box-shadow: var(--shadow);
   transition: all var(--transition, 0.2s ease);
   cursor: pointer;
