@@ -216,7 +216,7 @@ export default {
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
@@ -246,12 +246,10 @@ export default {
 .modal {
   width: 100%;
   max-width: 420px;
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border-radius: var(--radius, 20px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  box-shadow: var(--shadow-lg);
+  background: var(--surface, #FFFFFF);
+  border-radius: var(--radius-lg, 20px);
+  border: 1px solid var(--border, rgba(60, 60, 67, 0.12));
+  box-shadow: var(--shadow-float);
   overflow: hidden;
   animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -261,7 +259,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 20px 20px 14px 20px;
-  border-bottom: 1px solid var(--border, rgba(22, 163, 74, 0.1));
+  border-bottom: 1px solid var(--border, rgba(60, 60, 67, 0.12));
 }
 
 .head h2 {
@@ -269,24 +267,19 @@ export default {
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  background: linear-gradient(135deg, var(--primary, #16a34a) 0%, var(--primary-soft, #22c55e) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--primary, #34C759);
 }
 
 .x {
   border: none;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.35));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--surface-secondary, #F2F2F7);
   border-radius: var(--radius-full, 9999px);
   width: 32px;
   height: 32px;
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
-  color: var(--text-muted, #4b5563);
+  color: var(--text-secondary, #3C3C43);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -294,7 +287,7 @@ export default {
 }
 
 .x:hover {
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
+  background: var(--border, rgba(60, 60, 67, 0.12));
   transform: scale(1.1);
 }
 
@@ -308,25 +301,23 @@ export default {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   padding: 16px 20px;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.3));
+  background: var(--surface-secondary, #F2F2F7);
 }
 
 .tab {
   padding: 12px 14px;
-  border-radius: var(--radius-sm, 12px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius, 16px);
+  border: 1px solid var(--border, rgba(60, 60, 67, 0.12));
+  background: var(--surface, #FFFFFF);
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-muted, #4b5563);
-  transition: all var(--transition, 0.25s ease);
+  color: var(--text-secondary, #3C3C43);
+  transition: all var(--transition, 0.2s ease);
 }
 
 .tab:hover {
-  background: var(--surface-strong, rgba(255, 255, 255, 0.7));
+  background: var(--surface-secondary, #F2F2F7);
 }
 
 .tab:focus-visible {
@@ -335,11 +326,10 @@ export default {
 }
 
 .tab.active {
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
-  border-color: var(--primary, #16a34a);
+  background: var(--primary, #34C759);
+  border-color: var(--primary, #34C759);
   font-weight: 700;
-  color: var(--text, #1a1a1a);
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
+  color: var(--text-on-primary, #FFFFFF);
 }
 
 .form {
@@ -356,57 +346,53 @@ export default {
 label {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text, #1a1a1a);
+  color: var(--text, #000000);
 }
 
 input {
   padding: 12px 16px;
-  border-radius: var(--radius-sm, 12px);
-  border: 1px solid var(--border, rgba(22, 163, 74, 0.15));
-  background: var(--surface-glass, rgba(255, 255, 255, 0.5));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius, 16px);
+  border: 1px solid var(--border, rgba(60, 60, 67, 0.12));
+  background: var(--surface-secondary, #F2F2F7);
   outline: none;
   font-size: 15px;
-  color: var(--text, #1a1a1a);
+  color: var(--text, #000000);
   transition: all var(--transition-fast, 0.15s ease);
 }
 
 input::placeholder {
-  color: var(--text-subtle, #6b7280);
+  color: var(--text-tertiary, #8E8E93);
 }
 
 input:focus {
-  border-color: var(--primary, #16a34a);
-  background: var(--surface-strong, rgba(255, 255, 255, 0.9));
-  box-shadow: var(--focus-ring, 0 0 0 3px rgba(22, 163, 74, 0.2));
+  border-color: var(--primary, #34C759);
+  background: var(--surface, #FFFFFF);
+  box-shadow: var(--focus-ring, 0 0 0 3px rgba(52, 199, 89, 0.3));
 }
 
 .primary {
   padding: 14px 16px;
-  border-radius: var(--radius-sm, 12px);
+  border-radius: var(--radius, 16px);
   border: none;
   cursor: pointer;
   font-weight: 700;
   font-size: 15px;
-  background: linear-gradient(135deg, var(--primary, #16a34a) 0%, var(--primary-soft, #22c55e) 100%);
-  color: var(--primary-contrast, #ffffff);
-  box-shadow: 0 4px 16px var(--primary-glow, rgba(22, 163, 74, 0.25));
-  transition: all var(--transition, 0.25s ease);
+  background: var(--primary, #34C759);
+  color: var(--text-on-primary, #FFFFFF);
+  transition: all var(--transition, 0.2s ease);
 }
 
 .primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--primary-glow);
+  background: var(--primary-hover, #30B350);
 }
 
 .primary:focus-visible {
   outline: none;
-  box-shadow: var(--focus-ring), 0 4px 16px var(--primary-glow);
+  box-shadow: var(--focus-ring);
 }
 
 .primary:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.98);
 }
 
 .primary:disabled {
@@ -419,64 +405,26 @@ input:focus {
   margin: 0;
   font-size: 13px;
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: var(--radius, 16px);
   line-height: 1.4;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .err {
-  background: rgba(239, 68, 68, 0.12);
-  color: #b91c1c;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(255, 59, 48, 0.12);
+  color: var(--error, #FF3B30);
+  border: 1px solid rgba(255, 59, 48, 0.25);
 }
 
 .ok {
-  background: rgba(16, 185, 129, 0.12);
-  color: #047857;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: rgba(52, 199, 89, 0.12);
+  color: var(--success, #34C759);
+  border: 1px solid rgba(52, 199, 89, 0.25);
 }
 
 .hint {
   margin: 0;
   font-size: 12px;
-  color: var(--muted, #64748b);
+  color: var(--text-tertiary, #8E8E93);
   text-align: center;
-}
-
-/* Dark mode adjustments */
-:root[data-theme="dark"] .modal {
-  background: var(--surface-strong, rgba(51, 65, 85, 0.85));
-  border-color: var(--border-glass, rgba(148, 163, 184, 0.2));
-}
-
-:root[data-theme="dark"] .head {
-  border-color: var(--border-glass, rgba(148, 163, 184, 0.15));
-}
-
-:root[data-theme="dark"] .tabs {
-  background: var(--surface-glass, rgba(30, 41, 59, 0.3));
-}
-
-:root[data-theme="dark"] .tab {
-  background: var(--surface-glass, rgba(30, 41, 59, 0.45));
-  border-color: var(--border-glass, rgba(148, 163, 184, 0.15));
-}
-
-:root[data-theme="dark"] .tab.active {
-  background: var(--surface-strong, rgba(51, 65, 85, 0.8));
-}
-
-:root[data-theme="dark"] input {
-  background: var(--surface-glass, rgba(30, 41, 59, 0.5));
-  border-color: var(--border-glass, rgba(148, 163, 184, 0.2));
-}
-
-:root[data-theme="dark"] input:focus {
-  background: var(--surface-strong, rgba(51, 65, 85, 0.7));
-}
-
-:root[data-theme="dark"] .x {
-  background: var(--surface-glass, rgba(30, 41, 59, 0.45));
 }
 </style>
