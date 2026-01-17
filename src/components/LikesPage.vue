@@ -68,10 +68,12 @@ export default {
 <style scoped>
 .likes-page {
   width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   animation: fadeIn 0.4s ease;
 }
 
@@ -87,30 +89,25 @@ export default {
 }
 
 .likes-header h2 {
-  margin: 0 0 10px;
-  font-size: 2rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text, #000000);
 }
 
 .likes-header p {
   margin: 0;
-  color: var(--muted);
-  font-size: 1rem;
+  color: var(--text-tertiary, #8E8E93);
+  font-size: 15px;
 }
 
 /* Empty State */
 .empty-state {
   text-align: center;
   padding: 60px 32px;
-  background: var(--surface-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 24px;
-  border: 1px solid var(--border-glass);
+  background: var(--surface, #FFFFFF);
+  border-radius: var(--radius-lg, 20px);
+  box-shadow: var(--shadow);
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -119,129 +116,112 @@ export default {
 }
 
 .empty-icon {
-  font-size: 72px;
+  font-size: 64px;
   margin-bottom: 20px;
 }
 
 .empty-state h3 {
   margin: 0 0 12px;
-  font-size: 1.4rem;
+  font-size: 22px;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text, #000000);
 }
 
 .empty-state p {
-  margin: 0 0 28px;
-  color: var(--muted);
-  font-size: 1rem;
-  max-width: 300px;
+  margin: 0 0 24px;
+  color: var(--text-secondary, #3C3C43);
+  font-size: 15px;
+  max-width: 280px;
 }
 
 .action-btn {
-  padding: 16px 32px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-  color: white;
+  padding: 14px 28px;
+  background: var(--primary, #34C759);
+  color: var(--text-on-primary, #FFFFFF);
   border: none;
-  border-radius: 999px;
-  font-size: 1.05rem;
-  font-weight: 700;
+  border-radius: var(--radius, 16px);
+  font-size: 17px;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 20px var(--glow);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition, 0.2s ease);
 }
 
 .action-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 8px 28px var(--glow);
+  background: var(--primary-hover, #30B350);
 }
 
 .action-btn:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.98);
 }
 
 /* Likes Grid */
 .likes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 18px;
-  flex: 1;
-  align-content: start;
-  max-height: none;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.likes-grid::-webkit-scrollbar {
-  width: 6px;
-}
-
-.likes-grid::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.likes-grid::-webkit-scrollbar-thumb {
-  background: var(--border-glass);
-  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 /* Like Card */
 .like-card {
   position: relative;
-  display: grid;
-  grid-template-columns: 90px 1fr auto;
-  gap: 18px;
+  display: flex;
+  gap: 14px;
   align-items: center;
-  padding: 16px;
-  background: var(--surface-strong);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border-radius: 20px;
-  border: 1px solid var(--border-glass);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 12px;
+  background: var(--surface, #FFFFFF);
+  border-radius: var(--radius-lg, 20px);
+  box-shadow: var(--shadow);
+  transition: all var(--transition, 0.2s ease);
   cursor: pointer;
 }
 
 .like-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.like-card:active {
+  transform: scale(0.98);
 }
 
 .comment-hint {
-  color: var(--accent);
-  font-size: 0.8rem;
+  color: var(--primary, #34C759);
+  font-size: 13px;
 }
 
 .like-image {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: var(--radius, 16px);
+  flex-shrink: 0;
 }
 
 .like-image-placeholder {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
-  background: var(--surface-glass);
-  border-radius: 14px;
-  border: 1px solid var(--border-glass);
+  font-size: 32px;
+  background: var(--surface-secondary, #F2F2F7);
+  border-radius: var(--radius, 16px);
+  flex-shrink: 0;
 }
 
 .like-content {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   min-width: 0;
 }
 
 .like-content h3 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text, #000000);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -249,9 +229,9 @@ export default {
 
 .like-desc {
   margin: 0;
-  font-size: 0.9rem;
-  color: var(--muted);
-  line-height: 1.45;
+  font-size: 14px;
+  color: var(--text-secondary, #3C3C43);
+  line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -261,59 +241,41 @@ export default {
 
 .like-meta {
   display: flex;
-  gap: 14px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--muted);
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary, #8E8E93);
 }
 
 .remove-btn {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface-glass);
-  border: 1px solid var(--border-glass);
-  border-radius: 999px;
-  color: var(--muted);
-  font-size: 14px;
+  background: var(--surface-secondary, #F2F2F7);
+  border: none;
+  border-radius: var(--radius-full, 9999px);
+  color: var(--text-tertiary, #8E8E93);
+  font-size: 12px;
   cursor: pointer;
-  opacity: 0.5;
-  transition: all 0.2s ease;
-}
-
-.like-card:hover .remove-btn {
-  opacity: 1;
+  transition: all var(--transition-fast, 0.15s ease);
+  flex-shrink: 0;
 }
 
 .remove-btn:hover {
-  background: rgba(220, 38, 38, 0.15);
-  border-color: rgba(220, 38, 38, 0.3);
-  color: #dc2626;
+  background: rgba(255, 59, 48, 0.15);
+  color: var(--error, #FF3B30);
 }
 
 /* Responsive */
 @media (max-width: 640px) {
-  .likes-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .like-card {
-    grid-template-columns: 72px 1fr auto;
-    gap: 14px;
-    padding: 14px;
-  }
-
   .like-image,
   .like-image-placeholder {
-    width: 72px;
-    height: 72px;
-  }
-
-  .remove-btn {
-    opacity: 1;
+    width: 64px;
+    height: 64px;
   }
 }
 </style>
+
 

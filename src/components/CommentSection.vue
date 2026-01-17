@@ -246,9 +246,9 @@ export default {
 
 .comments-header h4 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text, #000000);
 }
 
 /* Comment Form */
@@ -265,42 +265,46 @@ export default {
 .comment-input {
   flex: 1;
   padding: 12px 16px;
-  background: var(--surface-glass);
-  border: 1px solid var(--border-glass);
-  border-radius: 999px;
-  font-size: 0.95rem;
-  color: var(--text);
+  background: var(--surface-secondary, #F2F2F7);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 15px;
+  color: var(--text, #000000);
   outline: none;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast, 0.15s ease);
 }
 
 .comment-input:focus {
-  background: var(--surface-strong);
-  border-color: var(--accent);
+  background: var(--surface, #FFFFFF);
+  border-color: var(--primary, #34C759);
+  box-shadow: var(--focus-ring);
 }
 
 .comment-input::placeholder {
-  color: var(--muted);
+  color: var(--text-tertiary, #8E8E93);
 }
 
 .send-btn {
   width: 44px;
   height: 44px;
-  border-radius: 999px;
+  border-radius: var(--radius-full, 9999px);
   border: none;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-  color: white;
-  font-size: 1.1rem;
+  background: var(--primary, #34C759);
+  color: var(--text-on-primary, #FFFFFF);
+  font-size: 18px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition, 0.2s ease);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .send-btn:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 4px 16px var(--glow);
+  background: var(--primary-hover, #30B350);
+}
+
+.send-btn:active:not(:disabled) {
+  transform: scale(0.95);
 }
 
 .send-btn:disabled {
@@ -311,18 +315,18 @@ export default {
 /* Login hint */
 .login-hint {
   margin: 0;
-  font-size: 0.9rem;
-  color: var(--muted);
+  font-size: 14px;
+  color: var(--text-secondary, #3C3C43);
   text-align: center;
   padding: 12px;
-  background: var(--surface-glass);
-  border-radius: 12px;
+  background: var(--surface-secondary, #F2F2F7);
+  border-radius: var(--radius, 16px);
 }
 
 .link-btn {
   background: none;
   border: none;
-  color: var(--accent);
+  color: var(--primary, #34C759);
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
@@ -332,38 +336,27 @@ export default {
 .comments-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   max-height: 300px;
   overflow-y: auto;
-  padding-right: 4px;
-}
-
-.comments-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.comments-list::-webkit-scrollbar-thumb {
-  background: var(--border-glass);
-  border-radius: 2px;
 }
 
 .comment-item {
   display: flex;
   gap: 12px;
   padding: 12px;
-  background: var(--surface-glass);
-  border-radius: 16px;
-  border: 1px solid var(--border-glass);
+  background: var(--surface-secondary, #F2F2F7);
+  border-radius: var(--radius, 16px);
 }
 
 .comment-avatar {
   width: 36px;
   height: 36px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-  color: white;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--primary, #34C759);
+  color: var(--text-on-primary, #FFFFFF);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -384,19 +377,19 @@ export default {
 
 .comment-author {
   font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text);
+  font-size: 14px;
+  color: var(--text, #000000);
 }
 
 .comment-time {
-  font-size: 0.75rem;
-  color: var(--muted);
+  font-size: 12px;
+  color: var(--text-tertiary, #8E8E93);
 }
 
 .comment-content {
   margin: 0;
-  font-size: 0.9rem;
-  color: var(--text);
+  font-size: 15px;
+  color: var(--text, #000000);
   line-height: 1.4;
   word-wrap: break-word;
 }
@@ -410,19 +403,19 @@ export default {
 .comment-actions .action-btn {
   background: none;
   border: none;
-  font-size: 0.75rem;
-  color: var(--muted);
+  font-size: 12px;
+  color: var(--text-tertiary, #8E8E93);
   cursor: pointer;
   padding: 0;
-  transition: color 0.2s ease;
+  transition: color var(--transition-fast, 0.15s ease);
 }
 
 .comment-actions .action-btn:hover {
-  color: var(--accent);
+  color: var(--primary, #34C759);
 }
 
 .comment-actions .action-btn.delete:hover {
-  color: #ef4444;
+  color: var(--error, #FF3B30);
 }
 
 /* Edit Form */
@@ -434,11 +427,11 @@ export default {
 
 .edit-input {
   padding: 8px 12px;
-  background: var(--surface-strong);
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: var(--text);
+  background: var(--surface, #FFFFFF);
+  border: 1px solid var(--primary, #34C759);
+  border-radius: var(--radius-sm, 12px);
+  font-size: 15px;
+  color: var(--text, #000000);
   outline: none;
 }
 
@@ -449,41 +442,49 @@ export default {
 
 .save-btn, .cancel-btn {
   padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.8rem;
+  border-radius: var(--radius-sm, 12px);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   border: none;
+  transition: all var(--transition-fast, 0.15s ease);
 }
 
 .save-btn {
-  background: var(--accent);
-  color: white;
+  background: var(--primary, #34C759);
+  color: var(--text-on-primary, #FFFFFF);
+}
+
+.save-btn:hover {
+  background: var(--primary-hover, #30B350);
 }
 
 .cancel-btn {
-  background: var(--surface-glass);
-  color: var(--muted);
-  border: 1px solid var(--border-glass);
+  background: var(--surface-secondary, #F2F2F7);
+  color: var(--text-secondary, #3C3C43);
+}
+
+.cancel-btn:hover {
+  background: var(--border, rgba(60, 60, 67, 0.12));
 }
 
 /* States */
 .no-comments {
   margin: 0;
   text-align: center;
-  color: var(--muted);
-  font-size: 0.9rem;
+  color: var(--text-tertiary, #8E8E93);
+  font-size: 14px;
   padding: 20px;
 }
 
 .error-msg {
   margin: 0;
   padding: 10px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 8px;
-  color: #ef4444;
-  font-size: 0.85rem;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  border-radius: var(--radius-sm, 12px);
+  color: var(--error, #FF3B30);
+  font-size: 14px;
   text-align: center;
 }
 </style>

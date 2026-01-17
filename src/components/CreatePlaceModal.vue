@@ -243,14 +243,9 @@ export default {
   width: 100%;
   max-width: 480px;
   max-height: 90vh;
-  background: var(--surface-strong);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border-radius: 24px;
-  border: 1px solid var(--border-glass);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 32px 64px rgba(0, 0, 0, 0.15);
+  background: var(--surface, #FFFFFF);
+  border-radius: var(--radius-xl, 28px);
+  box-shadow: var(--shadow-float);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -262,34 +257,34 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid var(--border-glass);
+  border-bottom: 1px solid var(--border, rgba(60, 60, 67, 0.12));
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text, #000000);
 }
 
 .close-btn {
   width: 32px;
   height: 32px;
-  border-radius: 999px;
+  border-radius: var(--radius-full, 9999px);
   border: none;
-  background: var(--surface-glass);
-  color: var(--muted);
+  background: var(--surface-secondary, #F2F2F7);
+  color: var(--text-secondary, #3C3C43);
   font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all var(--transition, 0.2s ease);
 }
 
 .close-btn:hover {
-  background: var(--surface-strong);
-  color: var(--text);
+  background: var(--border, rgba(60, 60, 67, 0.12));
+  color: var(--text, #000000);
 }
 
 /* Form */
@@ -305,16 +300,16 @@ export default {
 .image-upload {
   width: 100%;
   height: 180px;
-  border-radius: 16px;
-  border: 2px dashed var(--border-glass);
+  border-radius: var(--radius, 16px);
+  border: 2px dashed var(--border, rgba(60, 60, 67, 0.12));
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition, 0.2s ease);
 }
 
 .image-upload:hover {
-  border-color: var(--accent);
-  background: var(--surface-glass);
+  border-color: var(--primary, #34C759);
+  background: var(--surface-secondary, #F2F2F7);
 }
 
 .preview-image {
@@ -331,8 +326,8 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: var(--muted);
-  font-size: 0.95rem;
+  color: var(--text-tertiary, #8E8E93);
+  font-size: 15px;
 }
 
 .upload-icon {
@@ -347,30 +342,31 @@ export default {
 }
 
 label {
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--text);
+  color: var(--text, #000000);
 }
 
 input, textarea {
   padding: 12px 16px;
-  background: var(--surface-glass);
-  border: 1px solid var(--border-glass);
-  border-radius: 12px;
-  font-size: 0.95rem;
-  color: var(--text);
+  background: var(--surface-secondary, #F2F2F7);
+  border: 1px solid transparent;
+  border-radius: var(--radius, 16px);
+  font-size: 15px;
+  color: var(--text, #000000);
   outline: none;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast, 0.15s ease);
   font-family: inherit;
 }
 
 input:focus, textarea:focus {
-  background: var(--surface-strong);
-  border-color: var(--accent);
+  background: var(--surface, #FFFFFF);
+  border-color: var(--primary, #34C759);
+  box-shadow: var(--focus-ring);
 }
 
 input::placeholder, textarea::placeholder {
-  color: var(--muted);
+  color: var(--text-tertiary, #8E8E93);
 }
 
 textarea {
@@ -388,8 +384,8 @@ textarea {
 .star-btn {
   background: none;
   border: none;
-  font-size: 1.6rem;
-  color: var(--border-glass);
+  font-size: 24px;
+  color: var(--text-tertiary, #8E8E93);
   cursor: pointer;
   transition: all 0.15s ease;
   padding: 0;
@@ -403,8 +399,8 @@ textarea {
 
 .rating-value {
   margin-left: 12px;
-  font-size: 0.9rem;
-  color: var(--muted);
+  font-size: 14px;
+  color: var(--text-tertiary, #8E8E93);
   font-weight: 600;
 }
 
@@ -412,40 +408,42 @@ textarea {
 .msg {
   margin: 0;
   padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 0.9rem;
+  border-radius: var(--radius, 16px);
+  font-size: 14px;
   text-align: center;
 }
 
 .msg.error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  color: var(--error, #FF3B30);
 }
 
 .msg.success {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  background: rgba(52, 199, 89, 0.1);
+  border: 1px solid rgba(52, 199, 89, 0.2);
+  color: var(--success, #34C759);
 }
 
 /* Submit Button */
 .submit-btn {
   padding: 14px 24px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-  color: white;
+  background: var(--primary, #34C759);
+  color: var(--text-on-primary, #FFFFFF);
   border: none;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 700;
+  border-radius: var(--radius, 16px);
+  font-size: 17px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 16px var(--glow);
+  transition: all var(--transition, 0.2s ease);
 }
 
 .submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--glow);
+  background: var(--primary-hover, #30B350);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .submit-btn:disabled {
@@ -463,7 +461,7 @@ textarea {
 
   .modal-content {
     max-height: 90vh;
-    border-radius: 24px 24px 0 0;
+    border-radius: var(--radius-xl, 28px) var(--radius-xl, 28px) 0 0;
   }
 
   .image-upload {
