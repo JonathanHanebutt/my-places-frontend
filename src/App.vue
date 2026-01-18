@@ -152,9 +152,6 @@ export default {
   data() {
     const token = localStorage.getItem("auth_token");
     const username = localStorage.getItem("auth_username");
-    // Nur Likes laden wenn eingeloggt
-    const savedLikes = token ? JSON.parse(localStorage.getItem("liked_places") || "[]") : [];
-    const savedSwipedIds = token ? JSON.parse(localStorage.getItem("swiped_ids") || "[]") : [];
 
     return {
       /* ---------- UI ---------- */
@@ -174,8 +171,8 @@ export default {
 
       /* ---------- DATA ---------- */
       places: [],
-      likedPlaces: savedLikes,
-      swipedIds: new Set(savedSwipedIds),
+      likedPlaces: [],
+      swipedIds: new Set(),
       totalLikes: 0,
       totalDislikes: 0,
       loading: true,
@@ -191,9 +188,13 @@ export default {
   },
 
   mounted() {
-
     // Places laden (lokal via .env.local oder Prod via Render)
     this.loadPlaces();
+
+    // Wenn bereits eingeloggt, Favoriten laden
+    if (this.auth.isAuthenticated) {
+      this.loadFavorites();
+    }
   },
 
   methods: {
@@ -224,7 +225,7 @@ export default {
     },
 
 
-    onLoggedIn({ username, token }) {
+    async onLoggedIn({ username, token }) {
       this.auth.username = username;
       this.auth.token = token;
       this.auth.isAuthenticated = true;
@@ -233,6 +234,39 @@ export default {
       localStorage.setItem("auth_token", token);
 
       this.isLoginOpen = false;
+
+      // Favoriten vom Backend laden
+      await this.loadFavorites();
+    },
+
+    async loadFavorites() {
+      if (!this.auth.isAuthenticated) return;
+
+      const backendBase = this.getBackendBase();
+      try {
+        // Favoriten-IDs laden
+        const idsRes = await fetch(`${backendBase}/api/favorites/ids`, {
+          headers: { Authorization: `Bearer ${this.auth.token}` }
+        });
+
+        if (idsRes.ok) {
+          const favoriteIds = await idsRes.json();
+
+          // Markiere bereits geswiped
+          favoriteIds.forEach(id => this.swipedIds.add(id));
+
+          // Lade vollständige Favoriten
+          const favRes = await fetch(`${backendBase}/api/favorites`, {
+            headers: { Authorization: `Bearer ${this.auth.token}` }
+          });
+
+          if (favRes.ok) {
+            this.likedPlaces = await favRes.json();
+          }
+        }
+      } catch (err) {
+        console.error("Fehler beim Laden der Favoriten:", err);
+      }
     },
 
     logout() {
@@ -244,11 +278,9 @@ export default {
       localStorage.removeItem("auth_username");
       localStorage.removeItem("auth_token");
 
-      // Likes und Swipes zurücksetzen
+      // Likes und Swipes zurücksetzen (nur lokal, Backend behält sie)
       this.likedPlaces = [];
       this.swipedIds = new Set();
-      localStorage.removeItem("liked_places");
-      localStorage.removeItem("swiped_ids");
 
       // Zurück zur Landing Page
       this.isGuestMode = false;
@@ -274,15 +306,6 @@ export default {
 
       // Mark as swiped
       this.swipedIds.add(item.id);
-      localStorage.setItem("swiped_ids", JSON.stringify([...this.swipedIds]));
-
-      // Add to likes if liked
-      if (like) {
-        if (!this.likedPlaces.find(p => p.id === item.id)) {
-          this.likedPlaces.push(item);
-          localStorage.setItem("liked_places", JSON.stringify(this.likedPlaces));
-        }
-      }
 
       // optimistic UI
       const found = this.places.find((p) => p.id === item.id);
@@ -296,18 +319,56 @@ export default {
         }
       }
 
-      const path = like ? `/places/${item.id}/like` : `/places/${item.id}/dislike`;
+      if (like) {
+        // Add to local likes
+        if (!this.likedPlaces.find(p => p.id === item.id)) {
+          this.likedPlaces.push(item);
+        }
 
-      try {
-        await fetch(backendBase + path, { method: "POST" });
-      } catch (e) {
-        console.error("Fehler beim POST:", e);
+        // Wenn eingeloggt: Favorit im Backend speichern
+        if (this.auth.isAuthenticated) {
+          try {
+            await fetch(`${backendBase}/api/favorites/${item.id}`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${this.auth.token}` }
+            });
+          } catch (e) {
+            console.error("Fehler beim Speichern des Favoriten:", e);
+          }
+        }
+      } else {
+        // Dislike: nur Backend-Counter erhöhen
+        try {
+          await fetch(`${backendBase}/places/${item.id}/dislike`, { method: "POST" });
+        } catch (e) {
+          console.error("Fehler beim Dislike:", e);
+        }
       }
     },
 
-    removeLike(place) {
+    async removeLike(place) {
+      // Lokal entfernen
       this.likedPlaces = this.likedPlaces.filter(p => p.id !== place.id);
-      localStorage.setItem("liked_places", JSON.stringify(this.likedPlaces));
+
+      // Wenn eingeloggt: im Backend entfernen
+      if (this.auth.isAuthenticated) {
+        const backendBase = this.getBackendBase();
+        try {
+          await fetch(`${backendBase}/api/favorites/${place.id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${this.auth.token}` }
+          });
+
+          // Like-Count im UI aktualisieren
+          const found = this.places.find(p => p.id === place.id);
+          if (found && found.likeCount > 0) {
+            found.likeCount--;
+            this.totalLikes--;
+          }
+        } catch (e) {
+          console.error("Fehler beim Entfernen des Favoriten:", e);
+        }
+      }
     },
 
     openPlaceDetail(place) {
