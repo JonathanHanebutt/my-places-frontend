@@ -1,38 +1,35 @@
-# my-places
+# Features
+- Swipen von Places (Like / Dislike)
+- Favoriten (persistiert im Backend)
+- Place-Details ansehen
+- Neuer Place erstellen
+- Login / Registrierung + Gastmodus
+- Theme (Light/Dark)
+- Navigation über Bottom-Nav
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+# Setup & Installation
+Im Projekt-Root ausführen:
+```
 npm install
 ```
-
-### Compile and Hot-Reload for Development
-
-```sh
+# Development starten
+Startet die App im Dev-Modus:
+```
 npm run dev
 ```
+Öffne dann http://localhost:5173 (oder wie Vite ausgibt) im Browser.
 
-### Compile and Minify for Production
-
-```sh
-npm run build
+# Production Build
+Build erstellen und lokal testen:
 ```
+npm run build
+npm run preview
+```
+
+# Auth & Favoriten-Verhalten
+- Login/Register über das Modal.
+- Nach Login ruft das Frontend GET /api/favorites/ids bzw. GET /api/favorites um Favoriten zu laden.
+- Beim Like: POST /api/favorites/{placeId} (Backend speichert + erhöht Like-Count).
+- Beim Unlike: DELETE /api/favorites/{placeId}.
+- Logout entfernt den lokalen Auth-State — Favoriten bleiben im Backend erhalten und werden beim nächsten Login geladen.
+- Gastmodus funktioniert lokal und nutzt keine persistierten Favoriten.
